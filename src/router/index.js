@@ -10,12 +10,26 @@ Vue.use(VueRouter)
     name: 'Home',
     component: Home
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/view_login')
+  },
 ]
+
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to,from,next) => {
+  if(to.path != '/login'){
+    next()
+  }else{
+    next()
+  }
 })
 
 export default router

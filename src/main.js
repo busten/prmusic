@@ -7,7 +7,7 @@ import SvgIcon from '@/components/SvgIcon';
 
 Vue.component('SvgIcon', SvgIcon);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   router,
