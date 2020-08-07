@@ -9,7 +9,13 @@ pre, form, fieldset, table, th, td {
 html,body{
     height: 100%;
     width: 100%;
+    -webkit-tap-highlight-color:rgba(0,0,0,0); 
+
     }
+a:focus,input:focus,p:focus,div:focus{
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-user-modify:read-write-plaintext-only; 
+}
 address, caption, cite, code, dfn, em, strong, th, var {
     font-style: normal;
     font-weight: normal;
