@@ -37,6 +37,19 @@
   </div>
 </template>
 
+<script>
+export default {
+  props: {
+    data_submit: { type: Boolean },
+  },
+  watch: {
+    data_submit: function () {
+      alert("注册");
+    },
+  },
+};
+</script>
+
 <style>
 table {
   text-align-last: justify;
@@ -49,26 +62,26 @@ td {
   line-height: 40px;
 }
 
-input{
-    border: 1px solid silver;
-    line-height: 25px;
-    border-radius: 5px;
-    padding-left: 5px;
+input {
+  border: 1px solid silver;
+  line-height: 25px;
+  border-radius: 5px;
+  padding-left: 5px;
 }
 
-button{
-    line-height: 25px;
-    outline: none;
-    border-radius: 5px;
-    background-color: skyblue;
+button {
+  line-height: 25px;
+  outline: none;
+  border-radius: 5px;
+  background-color: skyblue;
 }
 
-button:hover{
-    background-color: deepskyblue;
+button:hover {
+  background-color: deepskyblue;
 }
 
-button:active{
-    background-color: dodgerblue;
+button:active {
+  background-color: dodgerblue;
 }
 .inputbox {
   width: 100%;
@@ -85,8 +98,8 @@ button:active{
 }
 
 .getcode {
-    border: none;
-    margin-left: 5px;
+  border: none;
+  margin-left: 5px;
 }
 
 .loginbtn {

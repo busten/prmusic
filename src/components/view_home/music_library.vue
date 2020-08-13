@@ -9,11 +9,12 @@
             :key="index"
             :class="{underline:current == index}"
           >{{item}}</li>
+          <li v-show="show_back" @click="back" class="back">Back</li>
         </ul>
       </div>
       <div class="box_centent">
         <transition name="fade" mode="out-in">
-          <component :is="comname" />
+          <component :is="comname" :isback="isback" @isbacks="isbacks" />
         </transition>
       </div>
     </div>
@@ -21,26 +22,50 @@
 </template>
 
 <script>
-import new_music from "../../components/view_home/music_library/new_music";
-import album from '../../components/view_home/music_library/album';
+import new_music from "../../components/view_home/music_library/presentation";
+import album from "../../components/view_home/music_library/album";
+import fortype from "../../components/view_home/music_library/type";
+import entire from "../../components/view_home/music_library/presentation";
 export default {
   components: {
-    new_music,album,
+    new_music,
+    album,
+    fortype,
+    entire,
   },
   data() {
     return {
-      comname:'new_music',
+      comname: "new_music",
       box_header_title: ["新曲上线", "合辑", "类型", "全部"],
       current: 0,
+      isback: false,
+      show_back: false,
     };
   },
   methods: {
     clickli(index) {
       this.current = index; //获取点击对象
-      switch(index){
-          case 0:this.comname = 'new_music';break;
-          case 1:this.comname = 'album';break;
+      switch (index) {
+        case 0:
+          this.comname = "new_music";
+          break;
+        case 1:
+          this.comname = "album";
+          break;
+        case 2:
+          this.comname = "fortype";
+          break;
+        case 3:
+          this.comname = "entire";
+          break;
       }
+    },
+    back() {
+      this.isback = !this.isback;
+      this.show_back = !this.show_back;
+    },
+    isbacks(e) {
+      this.show_back = e;
     },
   },
 };
@@ -92,7 +117,21 @@ export default {
   overflow: auto;
 }
 
-.box_centent::-webkit-scrollbar{
-    display: none;
+.box_centent::-webkit-scrollbar {
+  display: none;
+}
+
+.back {
+  float: right;
+}
+
+@media only screen and (max-width: 850px) {
+  .music_library_box {
+    width: 100%;
+  }
+
+  .box_header ul{
+    margin-left: 10px;
+  }
 }
 </style>

@@ -5,10 +5,13 @@
         <div ref="header" class="header">
           <div class="logo"></div>
           <ul>
-            <li @click="check_homepage">首页</li>
-            <li @click="check_music_library">音乐库</li>
-            <li>发现</li>
-            <li>
+            <li :class="{setcolor:component_name == 'homepage'}" @click="check_homepage">首页</li>
+            <li
+              :class="{setcolor:component_name == 'music_library'}"
+              @click="check_music_library"
+            >音乐库</li>
+            <li :class="{setcolor:component_name == 'discover'}" @click="check_discover">我的宝库</li>
+            <li :class="{setcolor:component_name == 'search'}" @click="check_search">
               <SvgIcon class="svgclas" name="search" />搜索
             </li>
           </ul>
@@ -16,7 +19,7 @@
         </div>
         <div :style="{height:content_height}" class="content">
           <transition name="fade" mode="out-in">
-          <component :is="component_name"/>
+            <component :is="component_name" />
           </transition>
         </div>
       </div>
@@ -24,37 +27,48 @@
   </div>
 </template>
 <script>
-import homepage from '../components/view_home/homepage';
-import music_library from '../components/view_home/music_library';
+import homepage from "../components/view_home/homepage";
+import music_library from "../components/view_home/music_library";
+import discover from '../components/view_home/discover';
+import search from '../components/view_home/search';
 export default {
-  components:{
-    homepage,music_library,
+  components: {
+    homepage,
+    music_library,
+    discover,
+    search,
   },
   data() {
     return {
-      content_height:0,
-      component_name: 'homepage'
+      content_height: 0,
+      component_name: "homepage",
     };
   },
-  methods:{
-    getcontent_height(){
+  methods: {
+    getcontent_height() {
       let we = this.$refs.header.offsetHeight;
-      this.content_height = 'calc(100% - '+we+'px)'
+      this.content_height = "calc(100% - " + we + "px)";
     },
-    check_homepage(){
-      this.component_name = 'homepage';
+    check_homepage() {
+      this.component_name = "homepage";
     },
-    check_music_library(){
-      this.component_name = 'music_library';
+    check_music_library() {
+      this.component_name = "music_library";
+    },
+    check_discover(){
+      this.component_name = "discover";
+    },
+    check_search(){
+      this.component_name = "search";
     }
   },
-  mounted(){
+  mounted() {
     this.getcontent_height();
-    window.addEventListener('resize', this.getcontent_height);
+    window.addEventListener("resize", this.getcontent_height);
   },
-  destroyed(){
-    window.removeEventListener('resize', this.getcontent_height);
-  }
+  destroyed() {
+    window.removeEventListener("resize", this.getcontent_height);
+  },
 };
 </script>
 
@@ -126,7 +140,6 @@ export default {
   vertical-align: middle;
 }
 
-
 .header ul {
   display: inline-block;
   color: gainsboro;
@@ -150,7 +163,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.users{
+.users {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -167,19 +180,24 @@ export default {
   overflow: auto;
 }
 
-.content::-webkit-scrollbar{
+.content::-webkit-scrollbar {
   display: none;
 }
 
 .fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .fade-leave-active {
-  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   transform: translateY(100px);
   opacity: 0;
+}
+
+.setcolor {
+  color: white;
 }
 
 @media only screen and (max-width: 850px) {
@@ -189,7 +207,7 @@ export default {
   .logo {
     float: inherit;
   }
-  .users{
+  .users {
     position: absolute;
     right: 0;
     margin-right: 0px;

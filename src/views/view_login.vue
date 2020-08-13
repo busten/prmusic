@@ -1,12 +1,12 @@
 <template>
   <div class="login">
     <div class="backgrounds">
-      <div class="box" :class="{addboxheight:isaddboxheight}">
+      <div v-on:keyup.enter="submit" class="box" :class="{addboxheight:isaddboxheight}">
         <p>
           <span @click="login">登陆</span>|
           <span @click="register">注册</span>
         </p>
-        <component :is="component_name" />
+        <component :data_submit="data_submit" :is="component_name" />
       </div>
     </div>
   </div>
@@ -20,6 +20,7 @@ export default {
     return {
       component_name: "login",
       isaddboxheight: false,
+      data_submit:false,
     };
   },
   components: {
@@ -35,6 +36,9 @@ export default {
       this.component_name = "register";
       this.isaddboxheight = true;
     },
+    submit(){
+      this.data_submit = !this.data_submit;
+    }
   },
 };
 </script>

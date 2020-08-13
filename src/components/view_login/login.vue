@@ -25,6 +25,19 @@
   </div>
 </template>
 
+<script>
+export default {
+  props:{
+    data_submit:{type:Boolean}
+  },
+  watch:{
+    data_submit:function(){
+      alert("登陆")
+    }
+  }
+}
+</script>
+
 <style>
 .tbbox {
   text-align-last: justify;

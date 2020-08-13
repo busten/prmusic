@@ -6,7 +6,7 @@
         <div class="homepage_header_content" v-for="iten in 3" :key="iten">
           <ul>
             <li>
-              <img src="" :onerror="defaultImg"/>
+              <img src :onerror="defaultImg" />
               <SvgIcon class="box_play" name="play" />
             </li>
             <li class="describe">您的合辑</li>
@@ -20,11 +20,11 @@
         <div ref="previous" @click="previous" :style="{opacity: turnpage}" class="svgs previous">
           <SvgIcon class="icon" name="previous" />
         </div>
-        <div ref="list1_box" class="scroll">
+        <div ref="list_box" class="scroll">
           <div class="homepage_header_content list1_content" v-for="iten in 10" :key="iten">
             <ul>
               <li>
-                <img src="" :onerror="defaultImg"/>
+                <img src :onerror="defaultImg" />
                 <SvgIcon class="box_play" name="play" />
               </li>
               <li class="describe">合辑名称</li>
@@ -39,21 +39,31 @@
     <div class="homepage_list1">
       <p class="title list1_title">随机推荐</p>
       <div @mouseleave="moveoutinbox2" @mouseenter="moveinbox2" class="box">
-        <div ref="previous" @click="previous" :style="{opacity: turnpage2}" class="svgs previous">
+        <div
+          ref="previous"
+          @click="previous(1)"
+          :style="{opacity: turnpage2}"
+          class="svgs previous"
+        >
           <SvgIcon class="icon" name="previous" />
         </div>
         <div ref="list1_box" class="scroll">
           <div class="homepage_header_content list1_content" v-for="iten in 10" :key="iten">
             <ul>
               <li>
-                <img src="" :onerror="defaultImg"/>
+                <img src :onerror="defaultImg" />
                 <SvgIcon class="box_play" name="play" />
               </li>
               <li class="describe">歌曲名称</li>
             </ul>
           </div>
         </div>
-        <div ref="nextdown" @click="nextdown" :style="{opacity: turnpage2}" class="svgs nextdown">
+        <div
+          ref="nextdown"
+          @click="nextdown(1)"
+          :style="{opacity: turnpage2}"
+          class="svgs nextdown"
+        >
           <SvgIcon class="icon" name="nextdown" />
         </div>
       </div>
@@ -65,15 +75,21 @@
 export default {
   data() {
     return {
-      defaultImg: 'this.src="' + require('../../assets/image/default.jpg') + '"',
+      defaultImg:
+        'this.src="' + require("../../assets/image/default.jpg") + '"',
       turnpage: 0,
       turnpage2: 0,
-      svgopacity:0,
+      svgopacity: 0,
     };
   },
   methods: {
-    previous() {
-      let boxscor = this.$refs.list1_box;
+    previous(e) {
+      let boxscor;
+      if (e != 1) {
+        boxscor = this.$refs.list_box;
+      } else {
+        boxscor = this.$refs.list1_box;
+      }
       let flag = 0;
       let scrollmove = setInterval(() => {
         boxscor.scrollLeft = boxscor.scrollLeft - 10;
@@ -83,8 +99,13 @@ export default {
         }
       }, 10);
     },
-    nextdown() {
-      let boxscor = this.$refs.list1_box;
+    nextdown(e) {
+      let boxscor;
+      if (e != 1) {
+        boxscor = this.$refs.list_box;
+      } else {
+        boxscor = this.$refs.list1_box;
+      }
       let flag = 0;
       let scrollmove = setInterval(() => {
         boxscor.scrollLeft = boxscor.scrollLeft + 10;
@@ -196,7 +217,7 @@ export default {
   margin-right: 50%;
 }
 
-.homepage_header_content ul li{
+.homepage_header_content ul li {
   position: relative;
 }
 
@@ -214,7 +235,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.box_play{
+.box_play {
   position: absolute;
   font-size: 30px;
   bottom: 10px;
@@ -225,7 +246,7 @@ export default {
   transition: all 0.3s ease;
 }
 
-.box_play:hover{
+.box_play:hover {
   font-size: 35px;
   color: white;
   opacity: 1;
@@ -292,7 +313,7 @@ export default {
   .nextdown {
     display: none;
   }
-  .box_play{
+  .box_play {
     opacity: 0.7;
   }
 }

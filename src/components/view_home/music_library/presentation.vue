@@ -62,6 +62,8 @@ export default {
   display: inline-block;
   margin-bottom: 5px;
   margin-left: 10px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .times{
