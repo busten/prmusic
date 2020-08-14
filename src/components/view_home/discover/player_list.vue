@@ -204,7 +204,8 @@ export default {
 }
 
 @media only screen and (max-width: 850px) {
-  .label_centent {
+  .label_centent,
+  .mu_list {
     width: 100%;
   }
   .last_line,

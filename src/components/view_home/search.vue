@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <div class="search_inpit">
+    <div v-show="!iscomponent" class="search_inpit">
       <input v-on:keyup.enter="submit" :class="{havedata:datas != 0}" class="forinput" type="text" name="search" />
       <div class="icon_search">
         <SvgIcon name="search" />
@@ -11,19 +11,27 @@
         </ul>
       </div>
     </div>
+    <component v-show="iscomponent" :is="comName"/>
   </div>
 </template>
 
 <script>
+import search_result from '../view_home/search/search_result';
 export default {
+  components:{
+    search_result,
+  },
   data(){
     return{
-      datas: 0
+      datas: 0,
+      comName: '',
+      iscomponent: false,
     }
   },
   methods:{
     submit(){
-      alert("触发键盘事件")
+      this.comName = 'search_result';
+      this.iscomponent = !this.iscomponent;
     }
   }
 }

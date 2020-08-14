@@ -42,7 +42,7 @@ export default {
   methods: {
     set_complement() {
       let getboxwidth = this.$refs.getboxwidth.clientWidth;
-      let getliwidth = this.$refs.getliwidth[0].clientWidth;
+      let getliwidth = this.$refs.getliwidth[0].clientWidth + 10;
       let columns = parseInt(getboxwidth / getliwidth);
       let nums = this.album / columns;
       let rows =
@@ -91,6 +91,7 @@ export default {
   width: 220px;
   text-align: center;
   position: relative;
+  margin-top: 10px;
 }
 
 .album_box li img {
@@ -138,4 +139,13 @@ export default {
   display: none;
 }
 
+@media only screen and (max-width: 850px) {
+  .album_box li{
+    width: 150px;
+  }
+  .album_box li img {
+    width: 130px;
+    height: 100px;
+  }
+}
 </style>
