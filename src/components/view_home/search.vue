@@ -60,6 +60,7 @@ export default {
   padding: 5px;
   padding-right: 20px;
   border-radius: 5px 5px 5px 5px;
+  color: black;
   outline: none;
   border: none;
 }

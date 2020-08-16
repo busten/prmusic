@@ -22,6 +22,7 @@
             <component :is="component_name" />
           </transition>
         </div>
+        <player />
       </div>
     </div>
   </div>
@@ -29,14 +30,16 @@
 <script>
 import homepage from "../components/view_home/homepage";
 import music_library from "../components/view_home/music_library";
-import discover from '../components/view_home/discover';
-import search from '../components/view_home/search';
+import discover from "../components/view_home/discover";
+import search from "../components/view_home/search";
+import player from "../components/player";
 export default {
   components: {
     homepage,
     music_library,
     discover,
     search,
+    player,
   },
   data() {
     return {
@@ -47,7 +50,7 @@ export default {
   methods: {
     getcontent_height() {
       let we = this.$refs.header.offsetHeight;
-      this.content_height = "calc(100% - " + we + "px)";
+      this.content_height = "calc(100% - " + (we + 70) + "px)";
     },
     check_homepage() {
       this.component_name = "homepage";
@@ -55,12 +58,12 @@ export default {
     check_music_library() {
       this.component_name = "music_library";
     },
-    check_discover(){
+    check_discover() {
       this.component_name = "discover";
     },
-    check_search(){
+    check_search() {
       this.component_name = "search";
-    }
+    },
   },
   mounted() {
     this.getcontent_height();

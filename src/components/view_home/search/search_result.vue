@@ -10,7 +10,6 @@
     <div class="search_result_centel">
       <p class="search_result_box_title">搜到合辑</p>
       <div class="result_box">
-        <album/>
       </div>
     </div>
   </div>
@@ -21,7 +20,7 @@ import presentation from "../music_library/presentation";
 import album from '../music_library/album';
 export default {
   components: {
-    presentation,album
+    presentation,
   },
   data() {
     return {};
