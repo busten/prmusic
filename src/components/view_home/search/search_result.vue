@@ -10,10 +10,6 @@
     <div class="search_result_centel">
       <p class="search_result_box_title">搜到合辑</p>
       <div class="result_box">
-<<<<<<< HEAD
-=======
-        <album/>
->>>>>>> a3a7791eeda5c8b59f75a6673641f7c67d415dfa
       </div>
     </div>
   </div>
@@ -24,11 +20,7 @@ import presentation from "../music_library/presentation";
 import album from '../music_library/album';
 export default {
   components: {
-<<<<<<< HEAD
     presentation,
-=======
-    presentation,album
->>>>>>> a3a7791eeda5c8b59f75a6673641f7c67d415dfa
   },
   data() {
     return {};
