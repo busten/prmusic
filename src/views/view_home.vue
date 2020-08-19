@@ -15,14 +15,14 @@
               <SvgIcon class="svgclas" name="search" />搜索
             </li>
           </ul>
-          <div class="users"></div>
+          <div @click="changeinpersonal" class="users"></div>
         </div>
         <div :style="{height:content_height}" class="content">
           <transition name="fade" mode="out-in">
             <component :is="component_name" />
           </transition>
         </div>
-        <player />
+        <player style="z-index: 10" />
       </div>
     </div>
   </div>
@@ -64,6 +64,9 @@ export default {
     check_search() {
       this.component_name = "search";
     },
+    changeinpersonal(){
+      this.$router.push('/user')
+    }
   },
   mounted() {
     this.getcontent_height();

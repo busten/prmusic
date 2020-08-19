@@ -26,7 +26,7 @@
       <li>
         <SvgIcon class="player_icon_next" name="nextsong" />
       </li>
-      <li>
+      <li @click="open_music_list">
         <SvgIcon class="list_page" name="list" />
         <span class="music_number">0</span>
       </li>
@@ -40,6 +40,26 @@
       preload="auto"
       :src="url_music"
     />
+    <div :style="{height:music_list_height}" class="music_list">
+      <p class="music_list_title">播放列表</p>
+      <div class="music_list_display">
+        <img src="../assets/image/default.jpg" />
+      </div>
+      <div class="music_list_box">
+        <ul>
+          <li v-for="index in 100" :key="index">
+            <span class="serial_number">{{index}}</span>
+            <div>
+              <img src="../assets/image/default.jpg" />
+            </div>
+            <div>
+              <p>歌曲名称</p>
+              <p>歌手<span class="music_list_time">00:00</span></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -62,9 +82,20 @@ export default {
       fullscreen: false,
       iscushion: false,
       inter: "",
+      music_list_height: "0",
+      isopen_music_list: false,
     };
   },
   methods: {
+    open_music_list() {
+      if (this.isopen_music_list) {
+        this.music_list_height = "0";
+        this.isopen_music_list = false;
+      } else {
+        this.music_list_height = "calc(100% - 70px)";
+        this.isopen_music_list = true;
+      }
+    },
     change_bar_btn(el) {
       var getcheckX = el.offsetX;
       var getwindowswidth = window.innerWidth;
@@ -182,7 +213,7 @@ export default {
 }
 
 .music_message div {
-  display: inline-block;
+  display: block;
   width: 60px;
   height: 100%;
   float: left;
@@ -198,7 +229,7 @@ export default {
 .music_message ul {
   width: 100px;
   height: calc(100% - 10px);
-  display: inline-block;
+  display: block;
   line-height: 100%;
   text-align: left;
   float: left;
@@ -214,7 +245,7 @@ export default {
   display: inline-block;
   width: 200px;
   height: 100%;
-  margin-left: 120px;
+  margin-left: 110px;
 }
 
 .play_btn li {
@@ -240,7 +271,7 @@ export default {
   font-size: 20px;
 }
 
-.music_number{
+.music_number {
   margin-left: 5px;
 }
 
@@ -253,10 +284,114 @@ export default {
 }
 
 .music_time {
-  display: inline-block;
+  display: block;
   color: white;
   float: right;
   line-height: 70px;
   margin-right: 20px;
+}
+
+.music_list {
+  width: 100%;
+  background-color: black;
+  position: fixed;
+  transition: all 0.5s ease;
+  bottom: 70px;
+  overflow: hidden;
+}
+
+.music_list_title {
+  width: 100%;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  padding: 10px 0;
+}
+
+.music_list_display {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+}
+
+.music_list_display img {
+  width: 400px;
+  height: 300px;
+  margin-bottom: 50px;
+  vertical-align: top;
+}
+
+.music_list_box {
+  display: block;
+  width: 50%;
+  height: 100%;
+  float: left;
+  color: white;
+}
+
+.music_list_box ul{
+  width: 100%;
+  height: calc(100% - 40px);
+  overflow: auto;
+}
+
+.music_list_box ul::-webkit-scrollbar{
+  display: none;
+}
+
+.music_list_box li {
+  width: 100%;
+  height: 50px;
+  text-align: left;
+}
+
+.music_list_box li:hover{
+  background-color: gray;
+}
+
+.serial_number{
+  width: 30px;
+  line-height: 40px;
+  float: left;
+  text-align: center;
+  margin: 3px 10px;
+}
+
+.music_list_box li div{
+  margin-top: 3px;
+  float: left;
+  white-space: nowrap;
+  position: relative;
+}
+
+.music_list_box li div:last-child{
+  width: calc(100% - 140px);
+  margin-left: 10px;
+  overflow: hidden;
+}
+
+.music_list_box img{
+  width: 70px;
+  height: 40px;
+  border: 1px solid white;
+}
+
+.music_list_time{
+  float: right;
+}
+
+@media only screen and (max-width: 850px) {
+  .music_list_display {
+    display: none;
+  }
+  .music_list_box{
+    width: 100%;
+  }
+  .play_btn{
+    margin-left: 60px;
+  }
 }
 </style>

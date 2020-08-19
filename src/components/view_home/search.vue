@@ -11,7 +11,7 @@
         </ul>
       </div>
     </div>
-    <component v-show="iscomponent" :is="comName"/>
+    <component @backsearch='backsearch' v-show="iscomponent" :is="comName"/>
   </div>
 </template>
 
@@ -31,6 +31,10 @@ export default {
   methods:{
     submit(){
       this.comName = 'search_result';
+      this.iscomponent = !this.iscomponent;
+    },
+    backsearch(){
+      this.comName = '';
       this.iscomponent = !this.iscomponent;
     }
   }
@@ -72,7 +76,7 @@ export default {
 .icon_search {
   position: absolute;
   color: black;
-  top: 2px;
+  top: 5px;
   right: -20px;
 }
 

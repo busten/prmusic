@@ -15,6 +15,11 @@ Vue.use(VueRouter)
     name: 'login',
     component: () => import('../views/view_login')
   },
+  {
+    path: '/user',
+    name: 'user',
+    component: () => import('../components/personal')
+  },
 ]
 
 

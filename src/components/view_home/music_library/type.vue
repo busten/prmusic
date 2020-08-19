@@ -100,7 +100,7 @@ export default {
 
 .labels_box li span {
   position: absolute;
-  z-index: 3;
+  z-index: 1;
 }
 
 .label1 {
@@ -109,7 +109,6 @@ export default {
   height: 100%;
   left: 0;
   top: 0;
-  z-index: 2;
 }
 
 .label2 {
@@ -118,7 +117,6 @@ export default {
   height: 100%;
   left: 0;
   top: 0;
-  z-index: 1;
   transition: all 1s ease;
 }
 
