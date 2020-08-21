@@ -33,6 +33,7 @@ import music_library from "../components/view_home/music_library";
 import discover from "../components/view_home/discover";
 import search from "../components/view_home/search";
 import player from "../components/player";
+import user from "../components/personal";
 export default {
   components: {
     homepage,
@@ -40,6 +41,7 @@ export default {
     discover,
     search,
     player,
+    user,
   },
   data() {
     return {
@@ -64,9 +66,9 @@ export default {
     check_search() {
       this.component_name = "search";
     },
-    changeinpersonal(){
-      this.$router.push('/user')
-    }
+    changeinpersonal() {
+      this.component_name = "user";
+    },
   },
   mounted() {
     this.getcontent_height();

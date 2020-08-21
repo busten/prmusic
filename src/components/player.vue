@@ -72,8 +72,8 @@ export default {
   data() {
     return {
       defaultImg: 'this.src="' + require("../assets/image/default.jpg") + '"',
-      url_music:
-        "https://data.prmusic.xyz/prmusic/audio/THE%20HERO%20%21%21%20%EF%BD%9E%E6%80%92%E3%82%8C%E3%82%8B%E6%8B%B3%E3%81%AB%E7%81%AB%E3%82%92%E3%81%A4%E3%81%91%E3%82%8D%EF%BD%9E.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=mynameisvan%2F20200816%2F%2Fs3%2Faws4_request&X-Amz-Date=20200816T103646Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=b845d2c75a9901de7301e978a7f9c36b396991acd1b44146cf1e895a3e2c364c",
+      url_music: 
+      'https://m701.music.126.net/20200821001604/b6e60a5bfc5f4a6af7432a58d6fb7bca/jdyyaac/0409/045b/0f5b/3cb4babda43167acece0817d2ccec07a.m4a',
       playicon: "play",
       play_status: false,
       total_time: "00:00",

@@ -16,9 +16,14 @@ Vue.use(VueRouter)
     component: () => import('../views/view_login')
   },
   {
-    path: '/user',
-    name: 'user',
-    component: () => import('../components/personal')
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/admin/view_admin_login')
+  },
+  {
+    path: '/admin_home',
+    name: 'admin_home',
+    component: () => import('../views/admin/view_admin_home')
   },
 ]
 
