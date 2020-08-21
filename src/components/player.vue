@@ -72,8 +72,7 @@ export default {
   data() {
     return {
       defaultImg: 'this.src="' + require("../assets/image/default.jpg") + '"',
-      url_music: 
-      'https://m701.music.126.net/20200821001604/b6e60a5bfc5f4a6af7432a58d6fb7bca/jdyyaac/0409/045b/0f5b/3cb4babda43167acece0817d2ccec07a.m4a',
+      url_music: '',
       playicon: "play",
       play_status: false,
       total_time: "00:00",
