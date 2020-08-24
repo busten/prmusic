@@ -159,7 +159,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .homepage {
   margin-top: 30px;
   width: 100%;

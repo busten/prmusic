@@ -62,6 +62,8 @@ export default {
   width: 100%;
   color: white;
   text-align: center;
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .input_box table {
