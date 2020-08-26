@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       comname: "new_music",
-      box_header_title: ["新曲上线", "合辑", "类型", "全部"],
+      box_header_title: ["新曲上线", "合辑", "歌手", "全部"],
       current: 0,
       isback: false,
       show_back: false,

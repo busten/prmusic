@@ -3,7 +3,7 @@
     <div class="labels">
       <ul class="labels_box">
         <li @mouseleave="moveoutli" @mouseenter="moveli(item)" v-for="item in lable" :key="item">
-          <span>心情</span>
+          <span>坂本真绫</span>
           <div :style="{'background-color':labelcolor[item]}" class="label1"></div>
           <div
             :style="{'background-color':labelcolor[item]}"

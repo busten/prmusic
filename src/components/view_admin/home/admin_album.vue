@@ -21,7 +21,13 @@
           <tr>
             <td>封面图片:</td>
             <td>
-              <van-uploader accept=".jpg" :after-read="afterRead" v-model="fileList" :max-count="1" multiple />
+              <van-uploader
+                accept=".jpg"
+                :after-read="afterRead"
+                v-model="fileList"
+                :max-count="1"
+                multiple
+              />
             </td>
           </tr>
           <tr>
@@ -172,9 +178,7 @@ export default {
     addalbum_window() {
       this.showPopup1 = !this.showPopup1;
     },
-    afterRead(file) {
-      
-    },
+    afterRead(file) {},
   },
 };
 </script>
@@ -364,5 +368,11 @@ textarea:last-child {
   position: absolute;
   right: 10px;
   bottom: 5px;
+}
+
+@media only screen and (max-width: 850px) {
+  .admin_album_box {
+    width: 100%;
+  }
 }
 </style>
