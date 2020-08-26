@@ -67,6 +67,7 @@ div:focus {
 .menu_box {
   width: 300px;
   height: 100%;
+  overflow: auto;
 }
 
 .home_btn {
