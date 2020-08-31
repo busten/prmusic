@@ -4,38 +4,98 @@
       <tr>
         <td class="tip">账号</td>
         <td>
-          <input type="text" />
+          <input type="text" v-model="user.username" />
         </td>
       </tr>
       <tr>
         <td class="tip">密码</td>
         <td>
-          <input type="password" />
+          <input type="password" v-model="user.password" />
         </td>
       </tr>
       <tr>
         <td class="tip">验证码</td>
         <td>
-          <input type="text" class="setcode" />
-          <button class="getcode">获取验证码</button>
+          <input type="text" v-model="user.captcha" class="setcode" maxlength="6" />
+          <div class="getcode">
+            <img @click="getverificationCode" :src="verificationCode" />
+          </div>
         </td>
       </tr>
     </table>
-    <button class="loginbtn">进入</button>
+    <p class="rememberme">
+      <input type="checkbox" v-model="user.rememberme" />
+      <span>7天免登录</span>
+    </p>
+    <button @click="login" :class="{dontcursor:isdontcursor}" class="loginbtn">
+      <van-loading v-show="showloading" class="loading" color="white" type="spinner" size="18px" />
+      <span>进入</span>
+    </button>
   </div>
 </template>
 
 <script>
+import { Loading } from "vant";
 export default {
-  props:{
-    data_submit:{type:Boolean}
+  components: {
+    [Loading.name]: Loading,
   },
-  watch:{
-    data_submit:function(){
-      alert("登陆")
-    }
-  }
-}
+  props: {
+    data_submit: { type: Boolean },
+  },
+  data() {
+    return {
+      verificationCode: "/prmusic/user/verificationCode",
+      showloading:false,
+      isdontcursor: false,
+      user: {
+        username: "",
+        password: "",
+        captcha: "",
+        rememberme: false,
+      },
+    };
+  },
+  methods: {
+    getverificationCode() {
+      this.verificationCode =
+        "/prmusic/user/verificationCode" +
+        "?code=" +
+        parseInt((Math.random() * 10000).toFixed(2));
+    },
+    login() {
+      this.showloading = true;
+      this.isdontcursor = true;
+      this.$axios
+        .post("/prmusic/user/login", {
+          username: this.user.username,
+          password: this.user.password,
+          captcha: this.user.captcha,
+          rememberme: this.user.rememberme,
+        })
+        .then((res) => {
+          if (res.headers.retoken != undefined) {
+            localStorage.setItem(
+              this.user.username + "retoken",
+              res.headers.retoken
+            );
+          }
+          this.showloading = false;
+          this.isdontcursor = false;
+        })
+        .catch((error) => {
+          this.showloading = false;
+          this.isdontcursor = false;
+        });
+    },
+  },
+  mounted() {},
+  watch: {
+    data_submit: function () {
+      this.login();
+    },
+  },
+};
 </script>
 
 <style>
@@ -51,6 +111,7 @@ td {
 }
 
 input {
+  width: 200px;
   border: 1px solid silver;
   line-height: 25px;
   border-radius: 5px;
@@ -83,17 +144,50 @@ button:active {
 
 .setcode {
   width: 33%;
+  float: left;
 }
 
 .getcode {
   border: none;
   margin-left: 5px;
+  float: left;
 }
 
 .loginbtn {
   border: none;
   text-align: center;
-  padding: 3px 100px;
-  margin-top: 20px;
+  margin-top: 10px;
+  position: relative;
+}
+
+.loginbtn span{
+  padding-left: 10px;
+}
+
+.rememberme {
+  border: none;
+  text-align: left;
+  margin-left: 140px;
+  margin-top: 10px;
+}
+
+.rememberme input {
+  width: auto;
+}
+
+.loading {
+  float: left;
+  margin-right: 5px;
+  position: absolute;
+  left: 80px;
+}
+
+.dontcursor{
+  background-color: gainsboro;
+  cursor: no-drop;
+}
+
+.dontcursor:hover{
+  background-color: gainsboro;
 }
 </style>
