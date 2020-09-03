@@ -1,29 +1,27 @@
 <template>
   <div class="album_particulars">
     <div class="album_img">
-      <img src :onerror="defaultImg" />
+      <img :src="setalbum.img_url" :onerror="defaultImg" />
     </div>
     <div class="album_introduce">
       <table>
         <tr>
-          <th colspan="3" class="album_introduce_title">一拳超人全收录</th>
+          <th colspan="3" class="album_introduce_title">{{setalbum.albumname}}</th>
         </tr>
         <tr>
           <td class="title_row">创建时间</td>
           <td>:</td>
-          <td>2020-08-10</td>
+          <td>{{setalbum.create_time}}</td>
         </tr>
         <tr>
           <td class="title_row">含有歌曲</td>
           <td>:</td>
-          <td>0首</td>
+          <td>{{setalbum.music_number == null ? 0:setalbum.music_number}}首</td>
         </tr>
         <tr valign="top" class="synopsis">
           <td class="title_row">简介</td>
           <td>:</td>
-          <td class="synopsis_content">
-            收录一拳超人全部歌曲。
-          </td>
+          <td class="synopsis_content">{{setalbum.introduce}}</td>
         </tr>
       </table>
     </div>
@@ -32,6 +30,9 @@
 
 <script>
 export default {
+  props: {
+    setalbum: "",
+  },
   data() {
     return {
       defaultImg:
@@ -94,12 +95,12 @@ export default {
   height: 200px;
 }
 
-.synopsis_content{
+.synopsis_content {
   white-space: normal;
 }
 
 @media only screen and (max-width: 870px) {
-  .album_img{
+  .album_img {
     display: none;
   }
 
@@ -107,11 +108,11 @@ export default {
     width: 100%;
   }
 
-  .album_introduce_title{
+  .album_introduce_title {
     text-align: center;
-  } 
+  }
 
-  .synopsis{
+  .synopsis {
     height: auto;
   }
 }

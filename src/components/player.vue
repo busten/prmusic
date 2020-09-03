@@ -7,28 +7,28 @@
     </div>
     <div class="music_message">
       <div>
-        <img src :onerror="defaultImg" />
+        <img :src="music.img_url" />
       </div>
       <ul>
-        <li>歌曲名称</li>
-        <li>歌手</li>
+        <li>{{music.name}}</li>
+        <li>{{music.song}}</li>
         <li>{{music_titme}}</li>
       </ul>
     </div>
     <ul class="play_btn">
-      <li>
+      <li @click="last_music">
         <SvgIcon class="player_icon_last" name="lastsong" />
       </li>
       <li @click="playerd">
         <SvgIcon v-show="!iscushion" class="player_icon_play" :name="playicon" />
         <van-loading size="40" :vertical="true" v-show="iscushion" color="white" />
       </li>
-      <li>
+      <li @click="next_music">
         <SvgIcon class="player_icon_next" name="nextsong" />
       </li>
       <li @click="open_music_list">
         <SvgIcon class="list_page" name="list" />
-        <span class="music_number">0</span>
+        <span class="music_number">{{music_list.length}}</span>
       </li>
     </ul>
     <p class="music_time">{{total_time}}</p>
@@ -38,23 +38,31 @@
       @playing="broadcast"
       @pause="suspend"
       preload="auto"
-      :src="url_music"
+      :src="music.url"
     />
     <div :style="{height:music_list_height}" class="music_list">
       <p class="music_list_title">播放列表</p>
       <div class="music_list_display">
-        <img src="../assets/image/default.jpg" />
+        <img :src="music.img_url" />
       </div>
       <div class="music_list_box">
         <ul>
-          <li v-for="index in 100" :key="index">
-            <span class="serial_number">{{index}}</span>
+          <li
+            @click="playmusic(items,index)"
+            v-for="(items,index) in music_list"
+            :class="{isthisplay:music.name == items.musicname}"
+            :key="index"
+          >
+            <span class="serial_number">{{index+1}}</span>
             <div>
-              <img src="../assets/image/default.jpg" />
+              <img :src="items.img_url" />
             </div>
             <div>
-              <p>歌曲名称</p>
-              <p>歌手<span class="music_list_time">00:00</span></p>
+              <p>{{items.musicname}}</p>
+              <p>
+                {{items.songname}}
+                <span class="music_list_time">00:00</span>
+              </p>
             </div>
           </li>
         </ul>
@@ -66,26 +74,64 @@
 <script>
 import { Loading } from "vant";
 export default {
+  props: {
+    setdata: "",
+    setalbum: "",
+  },
   components: {
     [Loading.name]: Loading,
   },
   data() {
     return {
-      defaultImg: 'this.src="' + require("../assets/image/default.jpg") + '"',
-      url_music: '',
       playicon: "play",
       play_status: false,
       total_time: "00:00",
-      music_titme: "00:00",
+      music_titme: "",
       progress: "0%",
       fullscreen: false,
       iscushion: false,
       inter: "",
       music_list_height: "0",
       isopen_music_list: false,
+      music: {
+        name: "暂无歌曲",
+        song: "",
+        url: "",
+        img_url: require("../assets/image/default.jpg"),
+      },
+      music_list: [],
+      nowmusic_listid: 0,
     };
   },
   methods: {
+    last_music() {
+      this.setplaytrack(false);
+    },
+    next_music() {
+      this.setplaytrack(true);
+    },
+    setplaytrack(next) {
+      var total = this.music_list.length - 1;
+      var nownum = this.nowmusic_listid;
+      if (next) {
+        nownum++;
+        if (nownum > total) {
+          nownum = 0;
+        }
+      } else {
+        nownum--;
+        if (nownum < 0) {
+          nownum = total;
+        }
+      }
+      this.nowmusic_listid = nownum;
+      var datas = this.music_list[nownum];
+      this.setmusic(datas);
+    },
+    playmusic(datas, index) {
+      this.setmusic(datas);
+      this.nowmusic_listid = index;
+    },
     open_music_list() {
       if (this.isopen_music_list) {
         this.music_list_height = "0";
@@ -116,11 +162,17 @@ export default {
     broadcast(obj) {
       this.iscushion = false;
       this.playicon = "pause";
+      this.play_status = true;
       this.get_music_time(obj);
     },
     suspend() {
       clearInterval(this.inter);
       this.playicon = "play";
+      if (this.play_status) {
+        setTimeout(() => {
+          this.next_music();
+        }, 500);
+      }
       this.play_status = false;
     },
     playerd(obj) {
@@ -158,6 +210,56 @@ export default {
           clearInterval(this.inter);
         }
       }, 100);
+    },
+    getalbumMusic(id) {
+      this.$fetchPost("/prmusic/user/getalbummmusic", {
+        album_id: JSON.stringify(1),
+      }).then((res) => {
+        this.music_list = res.message;
+      });
+    },
+    setmusic(datas) {
+      clearInterval(this.inter);
+      this.music.url = datas.url;
+      this.music.img_url = datas.img_url;
+      this.music.name = datas.musicname;
+      this.music.song = datas.songname;
+      this.$refs.audio.load();
+      this.$fetchPost("/prmusic/user/getMusicUrl", {
+        url: this.music.url,
+      }).then((res) => {
+        this.music.url = res.message;
+        setTimeout(() => {
+          this.$refs.audio.play();
+        }, 500);
+      });
+    },
+  },
+  watch: {
+    setdata(datas) {
+      clearInterval(this.inter);
+      this.music_list = [datas];
+      this.music.url = datas.url;
+      this.music.img_url = datas.img_url;
+      this.music.name = datas.musicname;
+      this.music.song = datas.songname;
+      this.$refs.audio.load();
+      this.$fetchPost("/prmusic/user/getMusicUrl", {
+        url: this.music.url,
+      }).then((res) => {
+        this.music.url = res.message;
+        setTimeout(() => {
+          this.$refs.audio.play();
+        }, 500);
+      });
+    },
+    setalbum(obj) {
+      console.log("收到信息")
+      this.getalbumMusic(obj.album_id);
+    },
+    music_list() {
+      var datas = this.music_list[0];
+      this.setmusic(datas);
     },
   },
 };
@@ -219,15 +321,14 @@ export default {
 }
 
 .music_message img {
-  width: 50px;
+  width: 80px;
   height: 50px;
   margin-top: 10px;
   margin-left: 10px;
 }
 
 .music_message ul {
-  width: 100px;
-  height: calc(100% - 10px);
+  height: calc(100% - 40px);
   display: block;
   line-height: 100%;
   text-align: left;
@@ -236,8 +337,12 @@ export default {
 }
 
 .music_message ul li {
-  margin-left: 10px;
+  margin-left: 40px;
   line-height: 17px;
+}
+
+.isthisplay {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .play_btn {
@@ -272,6 +377,7 @@ export default {
 
 .music_number {
   margin-left: 5px;
+  cursor: default;
 }
 
 .play_btn li {
@@ -317,7 +423,7 @@ export default {
 }
 
 .music_list_display img {
-  width: 400px;
+  width: 500px;
   height: 300px;
   margin-bottom: 50px;
   vertical-align: top;
@@ -331,13 +437,13 @@ export default {
   color: white;
 }
 
-.music_list_box ul{
+.music_list_box ul {
   width: 100%;
   height: calc(100% - 40px);
   overflow: auto;
 }
 
-.music_list_box ul::-webkit-scrollbar{
+.music_list_box ul::-webkit-scrollbar {
   display: none;
 }
 
@@ -347,11 +453,11 @@ export default {
   text-align: left;
 }
 
-.music_list_box li:hover{
+.music_list_box li:hover {
   background-color: gray;
 }
 
-.serial_number{
+.serial_number {
   width: 30px;
   line-height: 40px;
   float: left;
@@ -359,26 +465,26 @@ export default {
   margin: 3px 10px;
 }
 
-.music_list_box li div{
+.music_list_box li div {
   margin-top: 3px;
   float: left;
   white-space: nowrap;
   position: relative;
 }
 
-.music_list_box li div:last-child{
+.music_list_box li div:last-child {
   width: calc(100% - 140px);
   margin-left: 10px;
   overflow: hidden;
 }
 
-.music_list_box img{
+.music_list_box img {
   width: 70px;
   height: 40px;
   border: 1px solid white;
 }
 
-.music_list_time{
+.music_list_time {
   float: right;
 }
 
@@ -386,10 +492,10 @@ export default {
   .music_list_display {
     display: none;
   }
-  .music_list_box{
+  .music_list_box {
     width: 100%;
   }
-  .play_btn{
+  .play_btn {
     margin-left: 60px;
   }
 }

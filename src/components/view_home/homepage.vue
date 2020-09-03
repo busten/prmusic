@@ -1,6 +1,6 @@
 <template>
   <div class="homepage">
-    <div class="homepage_header">
+    <div v-show="!showablbum" class="homepage_header">
       <p class="title">精选合辑</p>
       <div class="box">
         <div class="homepage_header_content" v-for="iten in 3" :key="iten">
@@ -14,20 +14,22 @@
         </div>
       </div>
     </div>
-    <div class="homepage_list1">
+    <div v-show="!showablbum" class="homepage_list1">
       <p class="title list1_title">合辑推荐</p>
       <div @mouseleave="moveoutinbox" @mouseenter="moveinbox" class="box">
         <div ref="previous" @click="previous" :style="{opacity: turnpage}" class="svgs previous">
           <SvgIcon class="icon" name="previous" />
         </div>
         <div ref="list_box" class="scroll">
-          <div class="homepage_header_content list1_content" v-for="iten in 10" :key="iten">
+          <div class="homepage_header_content list1_content" v-for="(item,index) in album.recommend" :key="index">
             <ul>
               <li>
-                <img src :onerror="defaultImg" />
+                <img  @click="goinalbum(item)" :src="item.img_url" :onerror="defaultImg" />
+                <div @click="playalbum(item)">
                 <SvgIcon class="box_play" name="play" />
+                </div>
               </li>
-              <li class="describe">合辑名称</li>
+              <li  @click="goinalbum(item)" class="describe">{{item.albumname}}</li>
             </ul>
           </div>
         </div>
@@ -36,8 +38,8 @@
         </div>
       </div>
     </div>
-    <div class="homepage_list1">
-      <p class="title list1_title">随机推荐</p>
+    <div v-show="!showablbum" class="homepage_list1">
+      <p class="title list1_title">歌曲推荐</p>
       <div @mouseleave="moveoutinbox2" @mouseenter="moveinbox2" class="box">
         <div
           ref="previous"
@@ -48,17 +50,23 @@
           <SvgIcon class="icon" name="previous" />
         </div>
         <div ref="list1_box" class="scroll">
-          <div class="homepage_header_content list1_content" v-for="iten in 10" :key="iten">
+          <div
+            class="homepage_header_content list1_content"
+            v-for="(item,index) in music.random"
+            :key="index"
+          >
             <ul>
               <li>
-                <img src :onerror="defaultImg" />
-                <SvgIcon class="box_play" name="play" />
+                <img :src="item.img_url" />
+                <div @click="playermusic(item)" class="box_play">
+                  <SvgIcon name="play" />
+                </div>
               </li>
-              <li class="describe">歌曲名称</li>
+              <li class="describe">{{item.musicname}}</li>
             </ul>
           </div>
         </div>
-        <div
+        <div 
           ref="nextdown"
           @click="nextdown(1)"
           :style="{opacity: turnpage2}"
@@ -68,11 +76,27 @@
         </div>
       </div>
     </div>
+    <div v-show="showablbum" class="album_content">
+      <div class="album_particularss">
+        <album_particulars :setalbum="setalbum"/>
+      </div>
+      <div class="presentations">
+        <presentation @getmusic="getmusic" :setdata="setdata"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import presentation from './music_library/presentation';
+import album_particulars from './music_library/album/album_particulars';
 export default {
+  props:{
+    check_back:Boolean
+  },
+  components:{
+    album_particulars,presentation
+  },
   data() {
     return {
       defaultImg:
@@ -80,9 +104,47 @@ export default {
       turnpage: 0,
       turnpage2: 0,
       svgopacity: 0,
+      showablbum:false,
+      setalbum: '',
+      setdata: '',
+      music: {
+        random: [],
+      },
+      album:{
+        recommend:[]
+      }
     };
   },
   methods: {
+    playalbum(obj){
+       this.$emit("getalbum",obj)
+    },
+    goinalbum(obj){
+      this.showablbum = true;
+      this.setalbum = obj;
+      this.setdata = obj.album_id;
+    },
+    getalbumrecommend(){
+      this.$fetchGet("/prmusic/user/getalbumrecommend").then((res) => {
+        this.album.recommend = res.message;
+      });
+    },
+    getrancomMusic() {
+      this.$fetchGet("/prmusic/user/getrandom").then((res) => {
+        this.music.random = res.message;
+      });
+    },
+    playermusic(obj) {
+      this.$fetchPost("/prmusic/user/getMusicUrl", {
+        url: obj.url,
+      }).then((res) => {
+        obj.url = res.message;
+        this.$emit("getmusic",obj);
+      });
+    },
+    getmusic(obj){
+      this.$emit("getmusic",obj);
+    },
     previous(e) {
       let boxscor;
       if (e != 1) {
@@ -156,6 +218,15 @@ export default {
       }, 20);
     },
   },
+  mounted() {
+    this.getalbumrecommend();
+    this.getrancomMusic();
+  },
+  watch:{
+    check_back(){
+      this.showablbum = false;
+    }
+  }
 };
 </script>
 
@@ -223,7 +294,7 @@ export default {
 
 .homepage_header_content img {
   width: 80%;
-  height: 80%;
+  height: 150px;
   border-radius: 5px;
   box-shadow: 1px 0px 10px 3px black;
   transition: all 0.3s ease;
@@ -232,6 +303,7 @@ export default {
 
 .homepage_header_content img:hover {
   width: 85%;
+  height: 170px;
   transition: all 0.3s ease;
 }
 
@@ -294,6 +366,25 @@ export default {
   right: 0;
 }
 
+.album_content{
+  width: 80%;
+  height: calc(100% - 30px);
+  text-align: left;
+  margin: auto;
+  overflow: hidden;
+}
+
+.album_particularss{
+  margin-left: 10px;
+  height: 250px;
+}
+
+.presentations{
+  width: 100%;
+  height: calc(100% - 250px);
+  overflow: auto;
+}
+
 @media only screen and (max-width: 850px) {
   .homepage_header_content {
     width: 200px;
@@ -302,6 +393,14 @@ export default {
   .homepage_header_content:last-child {
     margin-right: 0;
   }
+  .homepage_header_content img{
+    height: 100px;
+  }
+  .homepage_header_content img:hover {
+  width: 85%;
+  height: 110px;
+  transition: all 0.3s ease;
+}
   .box,
   .homepage_list1 {
     width: 100%;

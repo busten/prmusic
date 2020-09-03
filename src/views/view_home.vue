@@ -19,10 +19,10 @@
         </div>
         <div :style="{height:content_height}" class="content">
           <transition name="fade" mode="out-in">
-            <component :is="component_name" />
+            <component :check_back="check_back" @getmusic="getmusic" @getalbum="getalbum" :is="component_name" />
           </transition>
         </div>
-        <player style="z-index: 10" />
+        <player :setalbum="setalbum" :setdata="setdata" style="z-index: 10" />
       </div>
     </div>
   </div>
@@ -47,24 +47,38 @@ export default {
     return {
       content_height: 0,
       component_name: "homepage",
+      setdata: '',
+      setalbum:'',
+      check_back: false,
     };
   },
   methods: {
+    getalbum(obj){
+      console.log("触发")
+      this.setalbum = obj;
+    },
+    getmusic(datas){
+      this.setdata = datas;
+    },
     getcontent_height() {
       let we = this.$refs.header.offsetHeight;
       this.content_height = "calc(100% - " + (we + 70) + "px)";
     },
     check_homepage() {
       this.component_name = "homepage";
+      this.check_back = !this.check_back;
     },
     check_music_library() {
       this.component_name = "music_library";
+      this.check_back = !this.check_back;
     },
     check_discover() {
       this.component_name = "discover";
+      this.check_back = !this.check_back;
     },
     check_search() {
       this.component_name = "search";
+      this.check_back = !this.check_back;
     },
     changeinpersonal() {
       this.component_name = "user";

@@ -27,6 +27,9 @@ import album from "../../components/view_home/music_library/album";
 import fortype from "../../components/view_home/music_library/type";
 import entire from "../../components/view_home/music_library/presentation";
 export default {
+  props:{
+    check_back:Boolean
+  },
   components: {
     new_music,
     album,
@@ -68,6 +71,14 @@ export default {
       this.show_back = e;
     },
   },
+  watch:{
+    check_back(){
+      this.comname = "new_music";
+      this.isback = false;
+      this.show_back = false;
+      this.current = 0;
+    }
+  }
 };
 </script>
 

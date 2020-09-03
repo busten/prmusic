@@ -4,12 +4,13 @@ import router from './router'
 import store from './store'
 import '@/svg';
 import SvgIcon from '@/components/SvgIcon';
-import axios from './Interceptor/Interceptor';
+import axios,{fetchGet,fetchPost} from './Interceptor/Interceptor';
 
 Vue.component('SvgIcon', SvgIcon);
 
 Vue.prototype.$axios = axios;
-
+Vue.prototype.$fetchGet = fetchGet;
+Vue.prototype.$fetchPost = fetchPost;
 
 Vue.config.productionTip = false;
 

@@ -14,6 +14,9 @@
 import player_list from "../view_home/discover/player_list";
 import album_list from "../view_home/discover/album_list";
 export default {
+  props:{
+    check_back:Boolean
+  },
   components: {
     player_list,
     album_list,
@@ -40,6 +43,13 @@ export default {
       this.isbackpage = !this.isbackpage;
     },
   },
+  watch:{
+    check_back(){
+      this.comName = "player_list";
+      this.isback = false;
+      this.isbackpage = !this.isbackpage;
+    }
+  }
 };
 </script>
 

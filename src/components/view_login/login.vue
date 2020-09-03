@@ -1,36 +1,38 @@
 <template>
   <div class="inputbox">
-    <table class="tbbox">
-      <tr>
-        <td class="tip">账号</td>
-        <td>
-          <input type="text" v-model="user.username" />
-        </td>
-      </tr>
-      <tr>
-        <td class="tip">密码</td>
-        <td>
-          <input type="password" v-model="user.password" />
-        </td>
-      </tr>
-      <tr>
-        <td class="tip">验证码</td>
-        <td>
-          <input type="text" v-model="user.captcha" class="setcode" maxlength="6" />
-          <div class="getcode">
-            <img @click="getverificationCode" :src="verificationCode" />
-          </div>
-        </td>
-      </tr>
-    </table>
-    <p class="rememberme">
-      <input type="checkbox" v-model="user.rememberme" />
-      <span>7天免登录</span>
-    </p>
-    <button @click="login" :class="{dontcursor:isdontcursor}" class="loginbtn">
-      <van-loading v-show="showloading" class="loading" color="white" type="spinner" size="18px" />
-      <span>进入</span>
-    </button>
+    <form>
+      <table class="tbbox">
+        <tr>
+          <td class="tip">账号</td>
+          <td>
+            <input type="text" v-model="user.username" />
+          </td>
+        </tr>
+        <tr>
+          <td class="tip">密码</td>
+          <td>
+            <input type="password" v-model="user.password" autocomplete />
+          </td>
+        </tr>
+        <tr>
+          <td class="tip">验证码</td>
+          <td>
+            <input type="text" v-model="user.captcha" class="setcode" maxlength="6" />
+            <div class="getcode">
+              <img @click="getverificationCode" :src="verificationCode" />
+            </div>
+          </td>
+        </tr>
+      </table>
+      <p class="rememberme">
+        <input type="checkbox" v-model="user.rememberme" />
+        <span>7天免登录</span>
+      </p>
+      <button @click="login" :class="{dontcursor:isdontcursor}" class="loginbtn" type="button">
+        <van-loading v-show="showloading" class="loading" color="white" type="spinner" size="18px" />
+        <span>进入</span>
+      </button>
+    </form>
   </div>
 </template>
 
@@ -46,7 +48,7 @@ export default {
   data() {
     return {
       verificationCode: "/prmusic/user/verificationCode",
-      showloading:false,
+      showloading: false,
       isdontcursor: false,
       user: {
         username: "",
@@ -64,32 +66,36 @@ export default {
         parseInt((Math.random() * 10000).toFixed(2));
     },
     login() {
-      this.showloading = true;
-      this.isdontcursor = true;
-      this.$axios
-        .post("/prmusic/user/login", {
-          username: this.user.username,
-          password: this.user.password,
-          captcha: this.user.captcha,
-          rememberme: this.user.rememberme,
-        })
-        .then((res) => {
-          if (res.headers.retoken != undefined) {
-            localStorage.setItem(
-              this.user.username + "retoken",
-              res.headers.retoken
-            );
-          }
-          this.showloading = false;
-          this.isdontcursor = false;
-        })
-        .catch((error) => {
-          this.showloading = false;
-          this.isdontcursor = false;
-        });
+      if (!this.isdontcursor) {
+        this.showloading = true;
+        this.isdontcursor = true;
+        this.$axios
+          .post("/prmusic/user/login", {
+            username: this.user.username,
+            password: this.user.password,
+            captcha: this.user.captcha,
+            rememberme: this.user.rememberme,
+          })
+          .then((res) => {
+            if (res.headers.retoken != undefined) {
+              localStorage.setItem("retoken", res.headers.retoken);
+            }
+            if (!this.user.rememberme) {
+              localStorage.removeItem("retoken");
+            }
+            this.showloading = false;
+            this.isdontcursor = false;
+            setTimeout(() => {
+              this.$router.push("/");
+            }, 2000);
+          })
+          .catch((error) => {
+            this.showloading = false;
+            this.isdontcursor = false;
+          });
+      }
     },
   },
-  mounted() {},
   watch: {
     data_submit: function () {
       this.login();
@@ -160,7 +166,7 @@ button:active {
   position: relative;
 }
 
-.loginbtn span{
+.loginbtn span {
   padding-left: 10px;
 }
 
@@ -182,12 +188,12 @@ button:active {
   left: 80px;
 }
 
-.dontcursor{
+.dontcursor {
   background-color: gainsboro;
   cursor: no-drop;
 }
 
-.dontcursor:hover{
+.dontcursor:hover {
   background-color: gainsboro;
 }
 </style>

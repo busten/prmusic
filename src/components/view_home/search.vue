@@ -18,6 +18,9 @@
 <script>
 import search_result from '../view_home/search/search_result';
 export default {
+  props:{
+    check_back:Boolean
+  },
   components:{
     search_result,
   },
@@ -36,6 +39,12 @@ export default {
     backsearch(){
       this.comName = '';
       this.iscomponent = !this.iscomponent;
+    }
+  },
+  watch:{
+    check_back(){
+      this.comName = '';
+      this.iscomponent = false;
     }
   }
 }

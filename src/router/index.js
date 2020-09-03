@@ -36,6 +36,7 @@ const router = new VueRouter({
 
 router.beforeEach((to,from,next) => {
   if(to.path != '/login'){
+    from.meta.keepAlive = false
     next()
   }else{
     next()
