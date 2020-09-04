@@ -10,7 +10,7 @@
               :class="{setcolor:component_name == 'music_library'}"
               @click="check_music_library"
             >音乐库</li>
-            <li :class="{setcolor:component_name == 'discover'}" @click="check_discover">我的宝库</li>
+            <li :class="{setcolor:component_name == 'discover'}" @click="check_discover">我的收藏</li>
             <li :class="{setcolor:component_name == 'search'}" @click="check_search">
               <SvgIcon class="svgclas" name="search" />搜索
             </li>
@@ -69,6 +69,10 @@ export default {
     },
     getcontent_height() {
       let we = this.$refs.header.offsetHeight;
+      var bodys = document.body.clientWidth;
+      if(bodys > 850 && bodys < 861){
+        we += 25;
+      }
       this.content_height = "calc(100% - " + (we + 70) + "px)";
     },
     check_homepage() {
@@ -158,7 +162,6 @@ export default {
 }
 
 .logo {
-  display: inline-block;
   width: 216px;
   height: 51px;
   float: left;
@@ -167,6 +170,7 @@ export default {
   background-position: center;
   background-size: cover;
   vertical-align: middle;
+  margin: auto;
 }
 
 .header ul {
@@ -197,7 +201,6 @@ export default {
   height: 30px;
   border-radius: 50%;
   background-color: white;
-  display: inline-block;
   float: right;
   margin-right: 20px;
   margin-top: 5px;

@@ -53,9 +53,6 @@ export default {
       this.$emit("getmusic", obj);
     },
   },
-  mounted(){
-      console.log(this.music == 0)
-  },
   watch: {
     setdata(id) {
       this.getalbumMusic(id);

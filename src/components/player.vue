@@ -26,6 +26,20 @@
       <li @click="next_music">
         <SvgIcon class="player_icon_next" name="nextsong" />
       </li>
+      <li>
+        <div @mouseleave="movevlomeicon = false" class="volume_box">
+          <div @click="setvolume" @mouseenter="movevlomeicon = true" class="horn">
+            <SvgIcon class="volume" :name="volumeicon" />
+          </div>
+          <div @click="setvolumn" @mouseenter="movevlomeicon = true" class="roundbar_box">
+            <div :class="{move_volume:movevlomeicon}" class="roundbar">
+              <div :style="{width:volume_width+'%'}" class="volume_btn_box">
+                <div class="volume_btn"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
       <li @click="open_music_list">
         <SvgIcon class="list_page" name="list" />
         <span class="music_number">{{music_list.length}}</span>
@@ -72,7 +86,7 @@
 </template>
 
 <script>
-import { Loading,Notify } from "vant";
+import { Loading, Notify } from "vant";
 export default {
   props: {
     setdata: "",
@@ -80,7 +94,7 @@ export default {
   },
   components: {
     [Loading.name]: Loading,
-    [Notify.name]:Notify,
+    [Notify.name]: Notify,
   },
   data() {
     return {
@@ -102,9 +116,31 @@ export default {
       },
       music_list: [],
       nowmusic_listid: 0,
+      movevlomeicon: false,
+      volume_width: 100,
+      isilence: false,
+      recordvolume: 0,
+      volumeicon: 'volume'
     };
   },
   methods: {
+    setvolume() {
+      this.isilence = !this.isilence;
+      if (this.isilence) {
+        this.recordvolume = this.volume_width;
+        this.volume_width = 0;
+        this.volumeicon = "novuloumn";
+      } else {
+        this.volume_width = this.recordvolume;
+        this.volumeicon = "volume";
+      }
+    },
+    setvolumn($event) {
+      var num = ($event.offsetX + 6).toFixed(2);
+      if (num <= 100) {
+        this.volume_width = num;
+      }
+    },
     last_music() {
       this.setplaytrack(false);
     },
@@ -219,8 +255,8 @@ export default {
         }).then((res) => {
           if (res.message.length != 0) {
             this.music_list = res.message;
-          }else{
-            Notify({ type: 'primary', message: '合辑中没有音乐或网络错误' });
+          } else {
+            Notify({ type: "primary", message: "合辑中没有音乐或网络错误" });
           }
         });
       }
@@ -266,6 +302,9 @@ export default {
         var datas = this.music_list[0];
         this.setmusic(datas);
       }
+    },
+    volume_width(num) {
+      this.$refs.audio.volume = (num / 100).toFixed(2);
     },
   },
 };
@@ -353,9 +392,9 @@ export default {
 
 .play_btn {
   display: inline-block;
-  width: 200px;
+  width: 370px;
   height: 100%;
-  margin-left: 110px;
+  margin-left: 260px;
 }
 
 .play_btn li {
@@ -363,6 +402,7 @@ export default {
   margin: 0px 10px;
   margin-top: 10px;
   line-height: 70px;
+  position: relative;
 }
 
 .player_icon_last {
@@ -375,6 +415,69 @@ export default {
 
 .player_icon_next {
   font-size: 21px;
+}
+
+.volume_box {
+  width: 120px;
+  height: 20px;
+  float: left;
+  position: relative;
+}
+
+.horn {
+  float: left;
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.volume {
+  font-size: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.roundbar_box {
+  width: 125px;
+  height: 8px;
+}
+
+.roundbar {
+  width: 0px;
+  height: 8px;
+  background-color: gray;
+  position: absolute;
+  left: 25px;
+  top: 5px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.volume_btn_box {
+  width: 0;
+  height: 100%;
+  min-width: 10px;
+  background-color: gainsboro;
+  border-radius: 5px;
+  position: relative;
+}
+
+.move_volume {
+  width: 95px;
+  transition: all 0.3s ease;
+}
+
+.volume_btn {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: white;
+  border: 1px solid gray;
+  position: absolute;
+  top: -2px;
+  right: 0;
 }
 
 .list_page {
@@ -505,6 +608,9 @@ export default {
   .play_btn {
     margin-left: 60px;
     margin-left: 90px;
+  }
+  .volume_box {
+    display: none;
   }
 }
 
