@@ -3,13 +3,16 @@
     <div v-show="!showablbum" class="homepage_header">
       <p class="title">精选合辑</p>
       <div class="box">
-        <div class="homepage_header_content" v-for="iten in 3" :key="iten">
+        <div class="homepage_header_content" v-for="(item,index) in album.selected" :key="index">
           <ul>
             <li>
-              <img src :onerror="defaultImg" />
-              <SvgIcon class="box_play" name="play" />
+              <img @click="goinalbum(item)" :src="item.img_url" :onerror="defaultImg" />
+              <div @click="goinalbum(item)" class="prettify"></div>
+              <div @click="playalbum(item)">
+                <SvgIcon class="box_play" name="play" />
+              </div>
             </li>
-            <li class="describe">您的合辑</li>
+            <li class="describe">{{item.albumname}}</li>
           </ul>
         </div>
       </div>
@@ -21,15 +24,20 @@
           <SvgIcon class="icon" name="previous" />
         </div>
         <div ref="list_box" class="scroll">
-          <div class="homepage_header_content list1_content" v-for="(item,index) in album.recommend" :key="index">
+          <div
+            class="homepage_header_content list1_content"
+            v-for="(item,index) in album.recommend"
+            :key="index"
+          >
             <ul>
               <li>
-                <img  @click="goinalbum(item)" :src="item.img_url" :onerror="defaultImg" />
+                <img @click="goinalbum(item)" :src="item.img_url" :onerror="defaultImg" />
+                <div @click="goinalbum(item)" class="prettify"></div>
                 <div @click="playalbum(item)">
-                <SvgIcon class="box_play" name="play" />
+                  <SvgIcon class="box_play" name="play" />
                 </div>
               </li>
-              <li  @click="goinalbum(item)" class="describe">{{item.albumname}}</li>
+              <li @click="goinalbum(item)" class="describe">{{item.albumname}}</li>
             </ul>
           </div>
         </div>
@@ -58,6 +66,7 @@
             <ul>
               <li>
                 <img :src="item.img_url" />
+                <div class="prettify"></div>
                 <div @click="playermusic(item)" class="box_play">
                   <SvgIcon name="play" />
                 </div>
@@ -66,7 +75,7 @@
             </ul>
           </div>
         </div>
-        <div 
+        <div
           ref="nextdown"
           @click="nextdown(1)"
           :style="{opacity: turnpage2}"
@@ -78,24 +87,25 @@
     </div>
     <div v-show="showablbum" class="album_content">
       <div class="album_particularss">
-        <album_particulars :setalbum="setalbum"/>
+        <album_particulars :setalbum="setalbum" />
       </div>
       <div class="presentations">
-        <presentation @getmusic="getmusic" :setdata="setdata"/>
+        <presentation @getmusic="getmusic" :setdata="setdata" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import presentation from './music_library/presentation';
-import album_particulars from './music_library/album/album_particulars';
+import presentation from "./music_library/presentation";
+import album_particulars from "./music_library/album/album_particulars";
 export default {
-  props:{
-    check_back:Boolean
+  props: {
+    check_back: Boolean,
   },
-  components:{
-    album_particulars,presentation
+  components: {
+    album_particulars,
+    presentation,
   },
   data() {
     return {
@@ -104,27 +114,33 @@ export default {
       turnpage: 0,
       turnpage2: 0,
       svgopacity: 0,
-      showablbum:false,
-      setalbum: '',
-      setdata: '',
+      showablbum: false,
+      setalbum: "",
+      setdata: "",
       music: {
         random: [],
       },
-      album:{
-        recommend:[]
-      }
+      album: {
+        recommend: [],
+        selected: [],
+      },
     };
   },
   methods: {
-    playalbum(obj){
-       this.$emit("getalbum",obj)
+    playalbum(obj) {
+      this.$emit("getalbum", obj);
     },
-    goinalbum(obj){
+    getselectedalbum() {
+      this.$fetchGet("/prmusic/user/getselectedalbum").then((res) => {
+        this.album.selected = res.message;
+      });
+    },
+    goinalbum(obj) {
       this.showablbum = true;
       this.setalbum = obj;
       this.setdata = obj.album_id;
     },
-    getalbumrecommend(){
+    getalbumrecommend() {
       this.$fetchGet("/prmusic/user/getalbumrecommend").then((res) => {
         this.album.recommend = res.message;
       });
@@ -135,15 +151,10 @@ export default {
       });
     },
     playermusic(obj) {
-      this.$fetchPost("/prmusic/user/getMusicUrl", {
-        url: obj.url,
-      }).then((res) => {
-        obj.url = res.message;
-        this.$emit("getmusic",obj);
-      });
+      this.$emit("getmusic", obj);
     },
-    getmusic(obj){
-      this.$emit("getmusic",obj);
+    getmusic(obj) {
+      this.$emit("getmusic", obj);
     },
     previous(e) {
       let boxscor;
@@ -219,14 +230,15 @@ export default {
     },
   },
   mounted() {
+    this.getselectedalbum();
     this.getalbumrecommend();
     this.getrancomMusic();
   },
-  watch:{
-    check_back(){
+  watch: {
+    check_back() {
       this.showablbum = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -282,6 +294,18 @@ export default {
   height: 250px;
   overflow: hidden;
   margin-top: 20px;
+  position: relative;
+}
+
+.prettify {
+  position: absolute;
+  width: 240px;
+  height: 40%;
+  bottom: 0px;
+  left: 30px;
+  background-image: linear-gradient(to top, black, transparent);
+  border-radius: 0 0 5px 5px;
+  z-index: 0;
 }
 
 .homepage_header_content:last-child {
@@ -297,14 +321,7 @@ export default {
   height: 150px;
   border-radius: 5px;
   box-shadow: 1px 0px 10px 3px black;
-  transition: all 0.3s ease;
   margin-top: 10px;
-}
-
-.homepage_header_content img:hover {
-  width: 85%;
-  height: 170px;
-  transition: all 0.3s ease;
 }
 
 .box_play {
@@ -314,8 +331,9 @@ export default {
   right: 10%;
   border-radius: 50%;
   color: gray;
-  opacity: 0.3;
+  opacity: 0.5;
   transition: all 0.3s ease;
+  z-index: 2;
 }
 
 .box_play:hover {
@@ -366,7 +384,7 @@ export default {
   right: 0;
 }
 
-.album_content{
+.album_content {
   width: 80%;
   height: calc(100% - 30px);
   text-align: left;
@@ -374,14 +392,17 @@ export default {
   overflow: hidden;
 }
 
-.album_particularss{
+.album_particularss {
   margin-left: 10px;
-  height: 250px;
+  min-height: 93px;
+  background-color: rgba(10, 10, 10, 0.3);
+  border-bottom: 1px solid gainsboro;
+  border-top: 1px solid gainsboro;
 }
 
-.presentations{
+.presentations {
   width: 100%;
-  height: calc(100% - 250px);
+  height: calc(100% - 280px);
   overflow: auto;
 }
 
@@ -390,17 +411,18 @@ export default {
     width: 200px;
     height: 180px;
   }
+  .homepage_header_content::after {
+    width: 160px;
+    height: 40%;
+    bottom: 70px;
+    left: 20px;
+  }
   .homepage_header_content:last-child {
     margin-right: 0;
   }
-  .homepage_header_content img{
+  .homepage_header_content img {
     height: 100px;
   }
-  .homepage_header_content img:hover {
-  width: 85%;
-  height: 110px;
-  transition: all 0.3s ease;
-}
   .box,
   .homepage_list1 {
     width: 100%;
@@ -414,6 +436,17 @@ export default {
   }
   .box_play {
     opacity: 0.7;
+  }
+  .album_content {
+    width: 100%;
+  }
+  .presentations {
+    height: calc(100% - 93px);
+  }
+  .prettify {
+    width: 160px;
+    bottom: 0px;
+    left: 20px;
   }
 }
 </style>

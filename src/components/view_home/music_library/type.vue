@@ -2,18 +2,18 @@
   <div class="fortype">
     <div class="labels">
       <ul class="labels_box">
-        <li @mouseleave="moveoutli" @mouseenter="moveli(item)" v-for="item in lable" :key="item">
-          <span>坂本真绫</span>
-          <div :style="{'background-color':labelcolor[item]}" class="label1"></div>
+        <li @mouseleave="moveoutli" @mouseenter="moveli(index)" @click="clickSong(item.ms_id)" v-for="(item,index) in allsong" :key="index">
+          <span>{{item.songname}}</span>
+          <div :style="{'background-color':labelcolor[index]}" class="label1"></div>
           <div
-            :style="{'background-color':labelcolor[item]}"
+            :style="{'background-color':labelcolor[index]}"
             class="label2"
-            :class="{ismove:ismove == item}"
+            :class="{ismove:ismove == index}"
           ></div>
         </li>
       </ul>
       <div class="labels_presentation">
-        <Presentation />
+        <Presentation :setsong="setsong" @getmusic="getmusic"/>
       </div>
     </div>
   </div>
@@ -22,35 +22,49 @@
 <script>
 import Presentation from "../../view_home/music_library/presentation";
 export default {
+  props:{
+    allsong:'',
+  },
   components: {
     Presentation,
   },
   data() {
     return {
-      ismove: "",
+      ismove: null,
       lable: 100,
       labelcolor: [],
+      setsong:null,
     };
   },
   methods: {
+    getmusic(obj){
+      this.$emit("getmusic", obj);
+    },
+    clickSong(id){
+      this.setsong = id;
+    },
     moveli(e) {
       this.ismove = e;
     },
     moveoutli() {
-      this.ismove = "";
+      this.ismove = null;
     },
     setcolor() {
       let r, g, b;
-      for (let index = 0; index <= this.lable; index++) {
+      for (let index = 0; index <= this.allsong.length; index++) {
         r = Math.floor(Math.random() * 256);
         g = Math.floor(Math.random() * 256);
         b = Math.floor(Math.random() * 256);
         this.labelcolor.push("rgb(" + r + "," + g + "," + b + ")");
       }
     },
+    setsongmesg(){
+      this.setsong = this.allsong[0].ms_id;
+    },
   },
   mounted() {
     this.setcolor();
+    this.setsongmesg();
   },
 };
 </script>
@@ -88,6 +102,7 @@ export default {
   margin: 10px;
   position: relative;
   padding-left: 10px;
+  padding-right: 20px;
   float: left;
   transition: all 0.3s ease;
 }

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { Loading } from "vant";
+import { Loading,Notify } from "vant";
 export default {
   props: {
     setdata: "",
@@ -80,6 +80,7 @@ export default {
   },
   components: {
     [Loading.name]: Loading,
+    [Notify.name]:Notify,
   },
   data() {
     return {
@@ -212,11 +213,17 @@ export default {
       }, 100);
     },
     getalbumMusic(id) {
-      this.$fetchPost("/prmusic/user/getalbummmusic", {
-        album_id: JSON.stringify(1),
-      }).then((res) => {
-        this.music_list = res.message;
-      });
+      if (id != undefined) {
+        this.$fetchPost("/prmusic/user/getalbummusic", {
+          album_id: JSON.stringify(id),
+        }).then((res) => {
+          if (res.message.length != 0) {
+            this.music_list = res.message;
+          }else{
+            Notify({ type: 'primary', message: '合辑中没有音乐或网络错误' });
+          }
+        });
+      }
     },
     setmusic(datas) {
       clearInterval(this.inter);
@@ -230,7 +237,14 @@ export default {
       }).then((res) => {
         this.music.url = res.message;
         setTimeout(() => {
-          this.$refs.audio.play();
+          this.$refs.audio
+            .play()
+            .then(() => {
+              setTimeout(() => {}, this.$refs.audio.duration * 1000);
+            })
+            .catch((e) => {
+              this.$refs.audio.pause();
+            });
         }, 500);
       });
     },
@@ -243,23 +257,15 @@ export default {
       this.music.img_url = datas.img_url;
       this.music.name = datas.musicname;
       this.music.song = datas.songname;
-      this.$refs.audio.load();
-      this.$fetchPost("/prmusic/user/getMusicUrl", {
-        url: this.music.url,
-      }).then((res) => {
-        this.music.url = res.message;
-        setTimeout(() => {
-          this.$refs.audio.play();
-        }, 500);
-      });
     },
     setalbum(obj) {
-      console.log("收到信息")
       this.getalbumMusic(obj.album_id);
     },
     music_list() {
-      var datas = this.music_list[0];
-      this.setmusic(datas);
+      if (this.music_list != "") {
+        var datas = this.music_list[0];
+        this.setmusic(datas);
+      }
     },
   },
 };
@@ -402,6 +408,7 @@ export default {
   position: fixed;
   transition: all 0.5s ease;
   bottom: 70px;
+  cursor: default;
   overflow: hidden;
 }
 
@@ -423,8 +430,8 @@ export default {
 }
 
 .music_list_display img {
-  width: 500px;
-  height: 300px;
+  width: 650px;
+  height: 450px;
   margin-bottom: 50px;
   vertical-align: top;
 }
@@ -497,6 +504,29 @@ export default {
   }
   .play_btn {
     margin-left: 60px;
+    margin-left: 90px;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .play_btn {
+    width: 150px;
+    margin-left: 90px;
+  }
+  .play_btn li {
+    margin: 0px 5px;
+    margin-top: 10px;
+  }
+  .player_icon_last {
+    font-size: 15px;
+  }
+
+  .player_icon_play {
+    font-size: 30px;
+  }
+
+  .player_icon_next {
+    font-size: 16px;
   }
 }
 </style>

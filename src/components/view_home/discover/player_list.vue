@@ -160,6 +160,7 @@ export default {
   line-height: 20px;
   width: 80%;
   padding-left: 5px;
+  color: black;
 }
 
 .btn {
@@ -180,6 +181,7 @@ export default {
 
 .btn button:hover {
   background-color: white;
+  color: black;
   transition: all 0.3s ease;
 }
 

@@ -14,7 +14,17 @@
       </div>
       <div class="box_centent">
         <transition name="fade" mode="out-in">
-          <component :is="comname" :isback="isback" @isbacks="isbacks" />
+          <component
+            :setalbum="music.allalbum"
+            :newmusic="music.newmusic"
+            :allsong="music.allsong"
+            :allmusic="music.allmusic"
+            :is="comname"
+            :isback="isback"
+            @isbacks="isbacks"
+            @getmusic="getmusic"
+            @getalbum="getalbum"
+          />
         </transition>
       </div>
     </div>
@@ -27,8 +37,8 @@ import album from "../../components/view_home/music_library/album";
 import fortype from "../../components/view_home/music_library/type";
 import entire from "../../components/view_home/music_library/presentation";
 export default {
-  props:{
-    check_back:Boolean
+  props: {
+    check_back: Boolean,
   },
   components: {
     new_music,
@@ -43,22 +53,51 @@ export default {
       current: 0,
       isback: false,
       show_back: false,
+      music: {
+        newmusic: [],
+        allalbum: [],
+        allsong:[],
+        allmusic:[]
+      },
     };
   },
   methods: {
+    getalbum(obj){
+      this.$emit("getalbum", obj);
+    },
+    getmusic(obj) {
+      this.$emit("getmusic", obj);
+    },
+    getnewmusic() {
+      this.$fetchGet("/prmusic/user/getnewmusic").then((res) => {
+        setTimeout(() => {
+          this.music.newmusic = res.message;
+        }, 500);
+      });
+    },
     clickli(index) {
-      this.current = index; //获取点击对象
+      this.current = index;
       switch (index) {
         case 0:
+          this.getnewmusic();
           this.comname = "new_music";
           break;
         case 1:
+          this.$fetchGet("/prmusic/user/getallalbum").then((res) => {
+            this.music.allalbum = res.message;
+          });
           this.comname = "album";
           break;
         case 2:
+          this.$fetchGet("/prmusic/user/getallsong").then((res) => {
+            this.music.allsong = res.message;
+          });
           this.comname = "fortype";
           break;
         case 3:
+          this.$fetchGet("/prmusic/user/getallmusic").then((res) => {
+            this.music.allmusic = res.message;
+          });
           this.comname = "entire";
           break;
       }
@@ -71,14 +110,17 @@ export default {
       this.show_back = e;
     },
   },
-  watch:{
-    check_back(){
+  mounted() {
+    this.getnewmusic();
+  },
+  watch: {
+    check_back() {
       this.comname = "new_music";
       this.isback = false;
       this.show_back = false;
       this.current = 0;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -141,7 +183,7 @@ export default {
     width: 100%;
   }
 
-  .box_header ul{
+  .box_header ul {
     margin-left: 10px;
   }
 }

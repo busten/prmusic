@@ -8,46 +8,77 @@
         <div class="content">
           <div>
             {{item.musicname}}
-            <span> - {{item.songname}}</span>
+            <span>- {{item.songname}}</span>
             <span class="times">00:00</span>
           </div>
           <div>{{item.albumname}}</div>
         </div>
       </li>
     </ul>
+    <p style="text-align: center;" v-show="music.length == 0 ? true : false">
+      <van-loading v-show="music != 0" size="24px">加载中...</van-loading>
+      <span v-show="music == 0">暂无歌曲</span>
+    </p>
   </div>
 </template>
 
 <script scoped>
+import { Loading } from 'vant';
 export default {
   props: {
     setdata: "",
+    newmusic: "",
+    setsong: "",
+    allmusic:""
+  },
+  components:{
+    [Loading.name]:Loading
   },
   data() {
     return {
       defaultImg:
         'this.src="' + require("../../../assets/image/default.jpg") + '"',
-      music: 20,
+      music: 0,
     };
   },
-  methods:{
-    getalbumMusic(id){
-      this.$fetchPost("/prmusic/user/getalbummmusic",
-      {
-        album_id: JSON.stringify(1)
-      }).then((res) =>{
+  methods: {
+    getalbumMusic(id) {
+      this.$fetchPost("/prmusic/user/getalbummusic", {
+        album_id: JSON.stringify(id),
+      }).then((res) => {
         this.music = res.message;
-      })
+      });
     },
-    setmusic(obj){
-      this.$emit("getmusic",obj);
+    setmusic(obj) {
+      this.$emit("getmusic", obj);
+    },
+  },
+  mounted(){
+      console.log(this.music == 0)
+  },
+  watch: {
+    setdata(id) {
+      this.getalbumMusic(id);
+    },
+    newmusic(obj) {
+      this.music = obj;
+    },
+    setsong(id) {
+      this.$fetchPost("/prmusic/user/getsongmusic", {
+        song_id: JSON.stringify(id),
+      }).then((res) => {
+        this.music = res.message;
+      });
+    },
+    allmusic:{
+      immediate: true,
+      handler(obj){
+        if(obj != undefined){
+          this.music = obj;
+        }
+      }
     }
   },
-  watch:{
-    setdata(id){
-      this.getalbumMusic(id);
-    }
-  }
 };
 </script>
 

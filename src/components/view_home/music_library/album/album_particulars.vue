@@ -1,27 +1,27 @@
 <template>
   <div class="album_particulars">
     <div class="album_img">
-      <img :src="setalbum.img_url" :onerror="defaultImg" />
+      <img :src="albums.img_url" :onerror="defaultImg" />
     </div>
     <div class="album_introduce">
       <table>
         <tr>
-          <th colspan="3" class="album_introduce_title">{{setalbum.albumname}}</th>
+          <th colspan="3" class="album_introduce_title">{{albums.albumname}}</th>
         </tr>
         <tr>
           <td class="title_row">创建时间</td>
           <td>:</td>
-          <td>{{setalbum.create_time}}</td>
+          <td>{{albums.create_time}}</td>
         </tr>
         <tr>
           <td class="title_row">含有歌曲</td>
           <td>:</td>
-          <td>{{setalbum.music_number == null ? 0:setalbum.music_number}}首</td>
+          <td>{{albums.music_number == null ? 0:albums.music_number}}首</td>
         </tr>
         <tr valign="top" class="synopsis">
           <td class="title_row">简介</td>
           <td>:</td>
-          <td class="synopsis_content">{{setalbum.introduce}}</td>
+          <td class="synopsis_content">{{albums.introduce}}</td>
         </tr>
       </table>
     </div>
@@ -37,8 +37,14 @@ export default {
     return {
       defaultImg:
         'this.src="' + require("../../../../assets/image/default.jpg") + '"',
+      albums:[]
     };
   },
+  watch:{
+    setalbum(obj){
+      this.albums = obj;
+    }
+  }
 };
 </script>
 
@@ -111,8 +117,7 @@ export default {
   .album_introduce_title {
     text-align: center;
   }
-
-  .synopsis {
+  .synopsis{
     height: auto;
   }
 }

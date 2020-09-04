@@ -19,7 +19,12 @@
         </div>
         <div :style="{height:content_height}" class="content">
           <transition name="fade" mode="out-in">
-            <component :check_back="check_back" @getmusic="getmusic" @getalbum="getalbum" :is="component_name" />
+            <component
+              :check_back="check_back"
+              @getmusic="getmusic"
+              @getalbum="getalbum"
+              :is="component_name"
+            />
           </transition>
         </div>
         <player :setalbum="setalbum" :setdata="setdata" style="z-index: 10" />
@@ -47,17 +52,19 @@ export default {
     return {
       content_height: 0,
       component_name: "homepage",
-      setdata: '',
-      setalbum:'',
+      setdata: "",
+      setalbum: "",
       check_back: false,
     };
   },
   methods: {
-    getalbum(obj){
-      console.log("触发")
+    getalbum(obj) {
       this.setalbum = obj;
+      setTimeout(() => {
+        this.setalbum = "";
+      }, 500);
     },
-    getmusic(datas){
+    getmusic(datas) {
       this.setdata = datas;
     },
     getcontent_height() {
