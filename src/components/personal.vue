@@ -21,7 +21,7 @@
           <tr>
             <td>
               <button @click="change_repassword">修改密码</button>
-              <button style="margin-left:10px;">注销</button>
+              <button @click="logout" style="margin-left:10px;">注销</button>
             </td>
           </tr>
           <div :class="{oprepassword:isoprepassword}" class="repassword">
@@ -67,6 +67,12 @@ export default {
     change_repassword() {
       this.isoprepassword = !this.isoprepassword;
     },
+    logout(){
+      localStorage.removeItem("retoken");
+      if(localStorage.getItem("retoken") == null){
+        this.$router.go(0);
+      }
+    }
   },
 };
 </script>
@@ -103,6 +109,8 @@ input {
 .personal_box_header table {
   padding: 10px;
   float: left;
+  text-align: left;
+  text-align-last: left;
 }
 
 .personal_box_header tr {

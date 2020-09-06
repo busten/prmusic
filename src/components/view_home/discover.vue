@@ -2,11 +2,11 @@
   <div class="discover">
     <ul class="lable_title">
       <li class="lable_title_li" @click="change_player_list">播放列表</li>
-      <li class="lable_title_li" @click="change_album_list">专辑</li>
+      <li class="lable_title_li" @click="change_album_list">喜爱的专辑</li>
       <li v-show="isback" @click="back" style="float:right;margin-right:10px;">Back</li>
     </ul>
     <transition name="fade_com" mode="out-in">
-      <component :backpage="isbackpage" @inplaylist="inplaylist" :is="comName" />
+      <component :backpage="isbackpage" @inplaylist="inplaylist" :is="comName" @getmusic="getmusic"/>
     </transition>
   </div>
 </template>
@@ -29,6 +29,9 @@ export default {
     };
   },
   methods: {
+    getmusic(obj){
+      this.$emit("getmusic", obj);
+    },
     change_player_list() {
       this.comName = "player_list";
     },

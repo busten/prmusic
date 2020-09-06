@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/view_home'
+import { Notify } from 'vant';
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -12,7 +13,7 @@ Vue.use(VueRouter)
   },
   {
     path: '/login',
-    name: 'login',
+    name: "login",
     component: () => import('../views/view_login')
   },
   {
@@ -34,12 +35,25 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to,from,next) => {
-  if(to.path != '/login'){
-    from.meta.keepAlive = false
+router.beforeEach((to, from, next) => {
+  if (to.path == '/admin' || to.path == '/admin_home') {
     next()
-  }else{
-    next()
+  } else {
+    if (localStorage.getItem("retoken") != undefined) {
+      if (to.path == '/') {
+        next();
+      } else {
+        next('/')
+      }
+    }
+    else {
+      if (to.path == '/login') {
+        next();
+      } else {
+        next('/login');
+        Notify({ type: 'danger', message: '请先登陆' });
+      }
+    }
   }
 })
 

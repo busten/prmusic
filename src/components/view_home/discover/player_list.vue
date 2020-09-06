@@ -3,13 +3,20 @@
     <ul v-show="close_box" ref="getboxwidth" class="label_centent">
       <li ref="getliwidth" @click="add_play_list" class="label_centent_li addlist">
         <SvgIcon class="icon" name="add" />
-        <p>添加列表</p>
+        <p>新增列表</p>
       </li>
-      <li @click="change_music_list" class="label_centent_li" v-for="iten in album" :key="iten"></li>
+      <li
+        @click="change_music_list(item.music_list_id)"
+        class="label_centent_li"
+        v-for="(item,index) in album"
+        :key="index"
+      >
+        <p style="margin-top: 80px;">{{item.music_list_name}}</p>
+      </li>
       <li class="last_line" v-for="item in complement" :key="item+'a'"></li>
       <div :class="{close_window:is_close_window}" class="window">
         <p>列表名称</p>
-        <input type="text" />
+        <input type="text" v-model="listname" />
         <div class="btn">
           <button @click="close_window" style="margin-right: 10px;">取消</button>
           <button @click="form_data">确定</button>
@@ -17,7 +24,7 @@
       </div>
     </ul>
     <div :class="{close_mu_list:close_mu_list}" class="mu_list">
-      <component :is="comName" />
+      <presentation :is="comName" :listid="listid" @getmusic="getmusic"/>
     </div>
   </div>
 </template>
@@ -25,29 +32,43 @@
 <script>
 import presentation from "../music_library/presentation";
 export default {
-  props:{
-    backpage:{type: Boolean}
+  props: {
+    backpage: { type: Boolean },
   },
   components: {
     presentation,
   },
   data() {
     return {
-      album: 11,
-      complement: 0,
+      album: [],
+      complement: [],
       is_close_window: true,
       comName: "",
       close_box: true,
       close_mu_list: true,
+      listname: "",
+      listid: null
     };
   },
   methods: {
-    change_music_list() {
+    getmusic(obj){
+      this.$emit("getmusic", obj);
+    },
+    getplayerlist() {
+      this.$fetchPost("/prmusic/user/getusermusiclist", {
+        uid: JSON.stringify(12),
+      }).then((res) => {
+        this.album = res.message;
+        this.set_complement();
+      });
+    },
+    change_music_list(id) {
       window.removeEventListener("resize", this.set_complement);
       this.close_mu_list = false;
       this.close_box = false;
       this.comName = "presentation";
-      this.$emit('inplaylist',true);
+      this.listid = id;
+      this.$emit("inplaylist", true);
     },
     add_play_list() {
       this.is_close_window = false;
@@ -56,30 +77,37 @@ export default {
       this.is_close_window = true;
     },
     form_data() {
-      this.is_close_window = true;
+      this.$fetchPost("/prmusic/user/addusermusiclist", {
+        uid: JSON.stringify(12),
+        listname: this.listname,
+      }).then((res) => {
+        this.is_close_window = true;
+      });
     },
     set_complement() {
       let getboxwidth = this.$refs.getboxwidth.clientWidth;
       let getliwidth = this.$refs.getliwidth.clientWidth + 10;
       let columns = parseInt(getboxwidth / getliwidth);
-      let nums = this.album / columns;
+      let nums = this.album.length / columns;
       let rows =
-        this.album % columns == 0 ? nums : parseInt(this.album / columns) + 1;
-      this.complement = columns * rows - this.album - 1;
+        this.album.length % columns == 0
+          ? nums
+          : parseInt(this.album.length / columns) + 1;
+      this.complement = columns * rows - this.album.length - 1;
     },
   },
-  watch:{
-    backpage:function(){
+  watch: {
+    backpage: function () {
       this.close_box = true;
-      this.comName = '';
-    }
+      this.comName = "";
+    },
   },
   mounted() {
-    this.set_complement();
+    this.getplayerlist();
     window.addEventListener("resize", this.set_complement);
   },
   destroyed() {
-    this.$emit('inplaylist',false);
+    this.$emit("inplaylist", false);
     window.removeEventListener("resize", this.set_complement);
   },
 };
@@ -112,13 +140,19 @@ export default {
   margin: 10px 5px;
   display: block;
   float: left;
+  overflow: hidden;
   transition: all 0.3s ease;
+  cursor: default;
 }
 
 .label_centent_li:hover {
   color: white;
   box-shadow: inset 0px 5px 25px gainsboro;
   transition: all 0.3s ease;
+}
+
+.label_centent_li p {
+  text-align: center;
 }
 
 .last_line {

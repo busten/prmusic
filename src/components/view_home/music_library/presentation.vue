@@ -23,16 +23,17 @@
 </template>
 
 <script scoped>
-import { Loading } from 'vant';
+import { Loading } from "vant";
 export default {
   props: {
     setdata: "",
     newmusic: "",
     setsong: "",
-    allmusic:""
+    allmusic: "",
+    listid: "",
   },
-  components:{
-    [Loading.name]:Loading
+  components: {
+    [Loading.name]: Loading,
   },
   data() {
     return {
@@ -67,14 +68,26 @@ export default {
         this.music = res.message;
       });
     },
-    allmusic:{
+    allmusic: {
       immediate: true,
-      handler(obj){
-        if(obj != undefined){
+      handler(obj) {
+        if (obj != undefined) {
           this.music = obj;
         }
-      }
-    }
+      },
+    },
+    listid: {
+      immediate: true,
+      handler(obj) {
+        if (obj != undefined) {
+          this.$fetchPost("/prmusic/user/getmusiclistmusic", {
+            listid: JSON.stringify(obj),
+          }).then((res) => {
+            this.music = res.message;
+          });
+        }
+      },
+    },
   },
 };
 </script>
