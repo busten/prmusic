@@ -241,6 +241,7 @@ export default {
   }
   .users {
     position: absolute;
+    top: 0;
     right: 0;
     margin-right: 0px;
   }

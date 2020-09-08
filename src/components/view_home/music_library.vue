@@ -1,5 +1,10 @@
 <template>
   <div class="music_library">
+    <van-overlay :show="showthepage" @click="show = false">
+      <div class="wrapper" @click.stop>
+        <van-loading color="white"/>
+      </div>
+    </van-overlay>
     <div class="music_library_box">
       <div class="box_header">
         <ul>
@@ -36,6 +41,7 @@ import new_music from "../../components/view_home/music_library/presentation";
 import album from "../../components/view_home/music_library/album";
 import fortype from "../../components/view_home/music_library/type";
 import entire from "../../components/view_home/music_library/presentation";
+import { Overlay, Loading } from "vant";
 export default {
   props: {
     check_back: Boolean,
@@ -45,9 +51,12 @@ export default {
     album,
     fortype,
     entire,
+    [Overlay.name]: Overlay,
+    [Loading.name]: Loading,
   },
   data() {
     return {
+      showthepage:true,
       comname: "new_music",
       box_header_title: ["新曲上线", "合辑", "歌手", "全部"],
       current: 0,
@@ -72,6 +81,7 @@ export default {
       this.$fetchGet("/prmusic/user/getnewmusic").then((res) => {
         setTimeout(() => {
           this.music.newmusic = res.message;
+          this.showthepage = false;
         }, 500);
       });
     },
@@ -79,24 +89,31 @@ export default {
       this.current = index;
       switch (index) {
         case 0:
+          this.showthepage = true;
           this.getnewmusic();
           this.comname = "new_music";
           break;
         case 1:
+          this.showthepage = true;
           this.$fetchGet("/prmusic/user/getallalbum").then((res) => {
             this.music.allalbum = res.message;
+            this.showthepage = false;
           });
           this.comname = "album";
           break;
         case 2:
+          this.showthepage = true;
           this.$fetchGet("/prmusic/user/getallsong").then((res) => {
             this.music.allsong = res.message;
+            this.showthepage = false;
           });
           this.comname = "fortype";
           break;
         case 3:
+          this.showthepage = true;
           this.$fetchGet("/prmusic/user/getallmusic").then((res) => {
             this.music.allmusic = res.message;
+            this.showthepage = false;
           });
           this.comname = "entire";
           break;

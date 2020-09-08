@@ -105,6 +105,9 @@ instance2.interceptors.response.use(
                 case 500: message = "服务器响应错误!"; break;
             }
         }
+        if(message == null || message == ""){
+            message = "发生了一个未知错误";
+        }
         Notify({ type: 'danger', message: message });
         return Promise.reject(error);
     }

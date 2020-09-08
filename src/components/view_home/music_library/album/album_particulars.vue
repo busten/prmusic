@@ -49,6 +49,15 @@ export default {
 </script>
 
 <style scoped>
+table{
+  text-align: left;
+  text-align-last: left;
+}
+
+td{
+  line-height: inherit;
+}
+
 .album_particulars {
   width: 100%;
   height: 100%;

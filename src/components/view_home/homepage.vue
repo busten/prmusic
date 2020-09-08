@@ -1,5 +1,10 @@
 <template>
   <div class="homepage">
+    <van-overlay :show="showthepage" @click="show = false">
+      <div class="wrapper" @click.stop>
+        <van-loading color="white"/>
+      </div>
+    </van-overlay>
     <div v-show="!showablbum" class="homepage_header">
       <p class="title">精选合辑</p>
       <div class="box">
@@ -99,6 +104,7 @@
 <script>
 import presentation from "./music_library/presentation";
 import album_particulars from "./music_library/album/album_particulars";
+import { Overlay, Loading } from "vant";
 export default {
   props: {
     check_back: Boolean,
@@ -106,9 +112,12 @@ export default {
   components: {
     album_particulars,
     presentation,
+    [Overlay.name]: Overlay,
+    [Loading.name]: Loading,
   },
   data() {
     return {
+      showthepage:true,
       defaultImg:
         'this.src="' + require("../../assets/image/default.jpg") + '"',
       turnpage: 0,
@@ -133,6 +142,7 @@ export default {
     getselectedalbum() {
       this.$fetchGet("/prmusic/user/getselectedalbum").then((res) => {
         this.album.selected = res.message;
+        this.showthepage = false;
       });
     },
     goinalbum(obj) {
@@ -143,11 +153,13 @@ export default {
     getalbumrecommend() {
       this.$fetchGet("/prmusic/user/getalbumrecommend").then((res) => {
         this.album.recommend = res.message;
+        this.showthepage = false;
       });
     },
     getrancomMusic() {
       this.$fetchGet("/prmusic/user/getrandom").then((res) => {
         this.music.random = res.message;
+        this.showthepage = false;
       });
     },
     playermusic(obj) {
