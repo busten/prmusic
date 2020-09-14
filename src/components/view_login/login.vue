@@ -78,15 +78,19 @@ export default {
           })
           .then((res) => {
             if (res.headers.retoken != undefined) {
-              localStorage.setItem("retoken", res.headers.retoken);
+              localStorage.setItem("retoken", true);
             }
             if (!this.user.rememberme) {
               localStorage.removeItem("retoken");
+              sessionStorage.removeItem("userid");
+            }else{
+              localStorage.setItem("retoken",res.headers.retoken);
             }
+            sessionStorage.setItem("userid",this.user.username)
             this.showloading = false;
             this.isdontcursor = false;
             setTimeout(() => {
-              this.$router.push("/");
+              this.$emit("movepage",true)
             }, 2000);
           })
           .catch((error) => {

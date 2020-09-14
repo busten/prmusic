@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 import VueRouter from 'vue-router'
 import Home from '../views/view_home'
 import { Notify } from 'vant';
@@ -36,10 +37,13 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  from.meta.keepAlive = false
+  var userservice = sessionStorage.getItem("userid");
+  var localuser = localStorage.getItem("retoken");
   if (to.path == '/admin' || to.path == '/admin_home') {
     next()
   } else {
-    if (localStorage.getItem("retoken") != undefined) {
+    if (userservice || localuser != null) {
       if (to.path == '/') {
         next();
       } else {

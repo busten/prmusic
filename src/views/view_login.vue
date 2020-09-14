@@ -1,12 +1,14 @@
 <template>
-  <div v-on:keyup.enter="submit" class="login">
+  <div v-if="showthispage" v-on:keyup.enter="submit" class="login">
     <div class="backgrounds">
       <div class="box" :class="{addboxheight:isaddboxheight}">
         <p>
           <span @click="login">登陆</span>|
           <span @click="register">注册</span>
         </p>
-        <component :data_submit="data_submit" :is="component_name" />
+        <keep-alive>
+          <component @movepage="movepage" :data_submit="data_submit" :is="component_name" />
+        </keep-alive>
       </div>
     </div>
   </div>
@@ -21,6 +23,7 @@ export default {
       component_name: "login",
       isaddboxheight: false,
       data_submit: false,
+      showthispage:true
     };
   },
   components: {
@@ -39,6 +42,10 @@ export default {
     submit() {
       this.data_submit = !this.data_submit;
     },
+    movepage() {
+      this.showthispage = false;
+      this.$router.push({path: '/'});
+    },
   },
   mounted() {
     var _this = this;
@@ -48,6 +55,9 @@ export default {
         _this.submit();
       }
     };
+  },
+  destroyed() {
+    console.log("销毁");
   },
 };
 </script>

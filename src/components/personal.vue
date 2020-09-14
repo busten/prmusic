@@ -67,12 +67,18 @@ export default {
     change_repassword() {
       this.isoprepassword = !this.isoprepassword;
     },
-    logout(){
-      localStorage.removeItem("retoken");
-      if(localStorage.getItem("retoken") == null){
-        this.$router.go(0);
-      }
-    }
+    logout() {
+      this.$axios.post("/prmusic/user/logout").then(() => {
+        localStorage.removeItem("retoken");
+        sessionStorage.removeItem("userid");
+        if (
+          localStorage.getItem("retoken") == null &&
+          sessionStorage.getItem("userid") == null
+        ) {
+          this.$router.go(0);
+        }
+      });
+    },
   },
 };
 </script>

@@ -606,7 +606,7 @@ export default {
     width: 100%;
   }
   .play_btn {
-    width: 150px;
+    width: 220px;
     margin-left: 90px;
   }
   .volume_box {
@@ -615,6 +615,9 @@ export default {
 }
 
 @media only screen and (max-width: 320px) {
+  .play_btn{
+    width: 150px;
+  }
   .play_btn li {
     margin: 0px 5px;
     margin-top: 10px;
